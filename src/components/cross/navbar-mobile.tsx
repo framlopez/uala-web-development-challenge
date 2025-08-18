@@ -1,14 +1,15 @@
 import LogoSrc from "@/public/logo.png";
 import Image from "next/image";
 import MenuIcon from "../icons/menu";
+import ButtonIcon from "./button-icon";
 
 export default function NavbarMobile() {
   return (
     <div className="relative lg:hidden">
       <div className="flex justify-between items-center bg-white rounded-bl-4xl shadow-2xs px-2">
-        <button className="p-3 text-[#606882]" type="button">
+        <ButtonIcon className="text-[#606882]">
           <MenuIcon className="size-6" />
-        </button>
+        </ButtonIcon>
         <div className="py-2">
           <Image className="w-20 h-10" src={LogoSrc} alt="Ualá" />
         </div>
