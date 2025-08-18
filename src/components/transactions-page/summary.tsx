@@ -10,7 +10,7 @@ export default function Summary() {
       <div className="flex flex-col gap-4 items-center">
         <SummaryTabs />
 
-        <Button className="text-primary">
+        <Button className="text-uala-primary">
           <AnalyzeIcon className="size-6" />
           Ver métricas
         </Button>
