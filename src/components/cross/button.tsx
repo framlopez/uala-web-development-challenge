@@ -1,4 +1,4 @@
-import cn from "@/src/utils/cn";
+import { cn } from "@/src/shadcn/lib/utils";
 
 export default function Button({
   className,

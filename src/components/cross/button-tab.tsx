@@ -1,4 +1,4 @@
-import cn from "@/src/utils/cn";
+import { cn } from "@/src/shadcn/lib/utils";
 
 export default function ButtonTab({
   className,
@@ -14,8 +14,8 @@ export default function ButtonTab({
   return (
     <button
       className={cn(
-        "p-3 text-foreground hover:text-primary transition-colors relative cursor-pointer",
-        isActive && "text-primary",
+        "p-3 text-foreground hover:text-uala-primary transition-colors relative cursor-pointer",
+        isActive && "text-uala-primary",
         className
       )}
       type="button"
