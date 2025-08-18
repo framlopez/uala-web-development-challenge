@@ -2,34 +2,30 @@ import AppleStoreSrc from "@/public/apple-store.png";
 import GoogleStoreSrc from "@/public/google-store.png";
 import LogoFullSrc from "@/public/logo-full.png";
 import Image from "next/image";
+import Link from "next/link";
 import HomeIcon from "../icons/home";
 import MetricsIcon from "../icons/metrics";
+import Button from "./button";
 
 export default function Sidebar() {
   return (
-    <div className="hidden bg-white fixed inset-y-0 z-50 lg:flex w-72 flex-col shadow">
+    <div className="hidden bg-white fixed inset-y-0 z-30 lg:flex w-72 flex-col shadow">
       <div className="flex grow flex-col gap-y-5 overflow-y-auto p-5">
         <Image className="h-10 w-[120px]" src={LogoFullSrc} alt="Logo" />
 
         <nav>
           <ul role="list" className="flex flex-col mt-6">
             <li>
-              <button
-                className="py-3 px-4 flex items-center gap-1 text-sm text-[#3564FD]"
-                type="button"
-              >
+              <Button className="text-[#3564FD] w-full">
                 <HomeIcon className="size-6" />
                 Inicio
-              </button>
+              </Button>
             </li>
             <li>
-              <button
-                className="py-3 px-4 flex items-center gap-1 text-sm text-[#3A3A3A]"
-                type="button"
-              >
+              <Button className="text-[#3A3A3A] w-full">
                 <MetricsIcon className="size-6" />
                 Métricas
-              </button>
+              </Button>
             </li>
           </ul>
         </nav>
@@ -39,16 +35,20 @@ export default function Sidebar() {
             Descargá la app desde
           </span>
           <div className="flex flex-col gap-4">
-            <Image
-              className="h-10 mx-auto"
-              src={AppleStoreSrc}
-              alt="Apple Store"
-            />
-            <Image
-              className="h-10 mx-auto"
-              src={GoogleStoreSrc}
-              alt="Google Store"
-            />
+            <Link href="https://uala.onelink.me/tTSW/vq840eav">
+              <Image
+                className="h-10 mx-auto"
+                src={AppleStoreSrc}
+                alt="Apple Store"
+              />
+            </Link>
+            <Link href="https://uala.onelink.me/tTSW/vq840eav">
+              <Image
+                className="h-10 mx-auto"
+                src={GoogleStoreSrc}
+                alt="Google Store"
+              />
+            </Link>
           </div>
         </div>
       </div>
