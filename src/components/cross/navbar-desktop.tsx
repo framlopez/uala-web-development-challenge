@@ -9,7 +9,7 @@ export default function NavbarDesktop() {
   const { data, isLoading } = useSWR<GetMeResponse>("/api/me", fetcher);
 
   return (
-    <div className="hidden lg:block">
+    <div className="hidden lg:block sticky top-0">
       <div className="bg-white py-5 px-6 flex items-center gap-8 shadow-2xs">
         {data?.avatarUrl ? (
           <Image
