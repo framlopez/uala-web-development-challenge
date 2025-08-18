@@ -1,33 +1,90 @@
 import LIMIT from "@/src/constants/listing-limit";
-import { NextResponse } from "next/server";
-import type { TransactionsResponse } from "./types";
+import TransactionsResponse from "@/src/types/responses/transactions-response";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
-	try {
-		const response = await fetch(
-			"https://uala-dev-challenge.s3.us-east-1.amazonaws.com/transactions.json",
-		);
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
 
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
-		}
+    // Obtengo los filtros de selección múltiple
+    const metodosCobro = searchParams.getAll("metodosCobro");
+    const tarjeta = searchParams.getAll("tarjeta");
+    const cuotas = searchParams.getAll("cuotas");
 
-		const data: TransactionsResponse = await response.json();
+    // Obtengo los filtros de fecha
+    const fechaDesde = searchParams.get("fechaDesde");
+    const fechaHasta = searchParams.get("fechaHasta");
 
-		// Limitar las transacciones a un máximo de 25
-		const limitedTransactions = data.transactions.slice(0, LIMIT);
+    // Obtengo los filtros de precio
+    const montoMin = searchParams.get("montoMin");
+    const montoMax = searchParams.get("montoMax");
 
-		const limitedResponse: TransactionsResponse = {
-			...data,
-			transactions: limitedTransactions,
-		};
+    // NTH: Obtener la información filtrada desde la base de datos
+    const response = await fetch(
+      "https://uala-dev-challenge.s3.us-east-1.amazonaws.com/transactions.json"
+    );
 
-		return NextResponse.json(limitedResponse, { status: 200 });
-	} catch (error) {
-		console.error("Error fetching transactions:", error);
-		return NextResponse.json(
-			{ error: "Error interno del servidor" },
-			{ status: 500 },
-		);
-	}
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data: TransactionsResponse = await response.json();
+
+    // Aplicar filtros
+    let filteredTransactions = data.transactions;
+
+    // Filtro por métodos de cobro
+    if (metodosCobro.length > 0) {
+      filteredTransactions = filteredTransactions.filter((transaction) =>
+        metodosCobro.includes(transaction.paymentMethod)
+      );
+    }
+
+    // Filtro por tarjeta
+    if (tarjeta.length > 0) {
+      filteredTransactions = filteredTransactions.filter((transaction) =>
+        tarjeta.includes(transaction.card)
+      );
+    }
+
+    // Filtro por cuotas
+    if (cuotas.length > 0) {
+      filteredTransactions = filteredTransactions.filter((transaction) =>
+        cuotas.includes(transaction.installments.toString())
+      );
+    }
+
+    // Filtro por monto
+    if (montoMin || montoMax) {
+      filteredTransactions = filteredTransactions.filter((transaction) => {
+        const min = montoMin ? parseFloat(montoMin) : 0;
+        const max = montoMax ? parseFloat(montoMax) : Infinity;
+        return transaction.amount >= min && transaction.amount <= max;
+      });
+    }
+
+    // Filtro por fecha
+    if (fechaDesde || fechaHasta) {
+      filteredTransactions = filteredTransactions.filter((transaction) => {
+        const transactionDate = new Date(transaction.createdAt);
+        const desde = fechaDesde ? new Date(fechaDesde) : new Date(0);
+        const hasta = fechaHasta ? new Date(fechaHasta) : new Date();
+        return transactionDate >= desde && transactionDate <= hasta;
+      });
+    }
+
+    // Limito las transacciones a un máximo de 25
+    const limitedTransactions = filteredTransactions.slice(0, LIMIT);
+
+    return NextResponse.json<TransactionsResponse>({
+      transactions: limitedTransactions,
+      metadata: data.metadata,
+    });
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return NextResponse.json(
+      { error: "Error interno del servidor" },
+      { status: 500 }
+    );
+  }
 }

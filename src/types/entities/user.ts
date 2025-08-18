@@ -1,4 +1,4 @@
-export interface User {
+interface User {
   id: string;
   firstname: string;
   lastname: string;
@@ -6,4 +6,4 @@ export interface User {
   avatarUrl: string;
 }
 
-export type GetMeResponse = User;
+export default User;
