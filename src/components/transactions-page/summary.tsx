@@ -1,3 +1,4 @@
+import Button from "../cross/button";
 import AnalyzeIcon from "../icons/analyze";
 import SummaryTabs from "./summary-tabs";
 
@@ -9,13 +10,10 @@ export default function Summary() {
       <div className="flex flex-col gap-4 items-center">
         <SummaryTabs />
 
-        <button
-          className="py-3 px-4 flex items-center gap-1 text-sm text-primary"
-          type="button"
-        >
+        <Button className="text-primary">
           <AnalyzeIcon className="size-6" />
           Ver métricas
-        </button>
+        </Button>
       </div>
     </div>
   );
