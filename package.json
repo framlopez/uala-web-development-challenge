@@ -12,15 +12,16 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
-    "@headlessui/react": "^2.2.7",
     "@hookform/resolvers": "^5.2.1",
     "@radix-ui/react-avatar": "^1.1.10",
+    "@radix-ui/react-collapsible": "^1.1.12",
     "@radix-ui/react-popover": "^1.1.15",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-switch": "^1.2.6",
     "@radix-ui/react-tabs": "^1.1.13",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "collapsible": "^1.0.1",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.539.0",
     "next": "15.4.6",
