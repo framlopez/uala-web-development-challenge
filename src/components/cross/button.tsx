@@ -5,11 +5,17 @@ export default function Button({
   onClick,
   disabled,
   children,
+  type = "button",
+  form,
+  ...props
 }: {
   className?: string;
   onClick?: () => void;
   disabled?: boolean;
   children: React.ReactNode;
+  type?: "button" | "submit" | "reset";
+  form?: string;
+  [key: string]: unknown;
 }) {
   return (
     <button
@@ -18,9 +24,11 @@ export default function Button({
         !disabled && "hover:bg-gray-100 cursor-pointer transition-colors",
         className
       )}
-      type="button"
+      type={type}
       onClick={onClick}
       disabled={disabled}
+      form={form}
+      {...props}
     >
       {children}
     </button>
