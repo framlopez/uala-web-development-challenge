@@ -2,8 +2,8 @@
 @import "tw-animate-css";
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --background: #fafafa;
+  --foreground: #3a3a3a;
   --uala-primary: #022a9a;
   --uala-success: #1c8367;
 

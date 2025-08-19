@@ -1,12 +1,12 @@
 "use client";
 
-import { GetMeResponse } from "@/app/api/me/types";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@/src/shadcn/components/ui/avatar";
 import { Skeleton } from "@/src/shadcn/components/ui/skeleton";
+import UserResponse from "@/src/types/responses/user-response";
 import fetcher from "@/src/utils/fetcher";
 import useSWR from "swr";
 
@@ -21,7 +21,7 @@ function NavbarDesktopWrapper({ children }: { children: React.ReactNode }) {
 }
 
 export default function NavbarDesktop() {
-  const { data, isLoading, error } = useSWR<GetMeResponse>("/api/me", fetcher);
+  const { data, isLoading, error } = useSWR<UserResponse>("/api/me", fetcher);
 
   if (isLoading) {
     return (
@@ -46,15 +46,15 @@ export default function NavbarDesktop() {
     <div className="hidden lg:block sticky top-0">
       <div className="bg-white py-5 px-6 flex items-center gap-8 shadow-2xs">
         <Avatar className="size-10">
-          <AvatarImage src={data.avatarUrl} />
+          <AvatarImage src={data.user.avatarUrl} />
           <AvatarFallback>
-            {data.firstname.charAt(0)}
-            {data.lastname.charAt(0)}
+            {data.user.firstname.charAt(0)}
+            {data.user.lastname.charAt(0)}
           </AvatarFallback>
         </Avatar>
 
         <span className="font-bold text-base">
-          {data.firstname} {data.lastname}
+          {data.user.firstname} {data.user.lastname}
         </span>
       </div>
     </div>

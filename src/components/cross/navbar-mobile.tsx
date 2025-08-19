@@ -13,7 +13,7 @@ export default function NavbarMobile() {
         <div className="py-2">
           <Image className="w-20 h-10" src={LogoSrc} alt="Ualá" />
         </div>
-        <div></div>
+        <div />
       </div>
       <div className="bg-white size-8 absolute top-full right-0 overflow-hidden">
         <div className="absolute bottom-0 left-0 size-16 rounded-full bg-background inset-shadow-2xs transform -translate-x-1/2 translate-y-1/2" />

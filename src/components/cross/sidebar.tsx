@@ -16,16 +16,20 @@ export default function Sidebar() {
         <nav>
           <ul role="list" className="flex flex-col mt-6">
             <li>
-              <Button className="text-[#3564FD] w-full">
-                <HomeIcon className="size-6" />
-                Inicio
-              </Button>
+              <Link href="#" className="w-full">
+                <Button className="text-[#3564FD] w-full">
+                  <HomeIcon className="size-6" />
+                  Inicio
+                </Button>
+              </Link>
             </li>
             <li>
-              <Button className="text-[#3A3A3A] w-full">
-                <MetricsIcon className="size-6" />
-                Métricas
-              </Button>
+              <Link href="#" className="w-full">
+                <Button className="w-full text-[#3A3A3A]">
+                  <MetricsIcon className="size-6 text-[#737373]" />
+                  Métricas
+                </Button>
+              </Link>
             </li>
           </ul>
         </nav>
