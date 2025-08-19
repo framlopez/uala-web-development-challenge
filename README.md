@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Uala
 
-## Getting Started
+## Descripción
 
-First, run the development server:
+Aplicación web para gestión de transacciones y métricas financieras.
+
+## Instalación
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Scripts disponibles
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Desarrollo
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+pnpm dev          # Inicia el servidor de desarrollo
+pnpm build        # Construye la aplicación para producción
+pnpm start        # Inicia la aplicación en modo producción
+pnpm lint         # Ejecuta el linter
+```
 
-## Learn More
+### Testing
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+pnpm test         # Ejecuta todos los tests
+pnpm test:watch   # Ejecuta tests en modo watch
+pnpm test:coverage # Ejecuta tests con reporte de coverage
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Cobertura de Tests
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Actualmente tenemos **100% de coverage** en el archivo `app/api/me/route.ts`, que incluye:
 
-## Deploy on Vercel
+- ✅ **Statements**: 100%
+- ✅ **Branches**: 100%
+- ✅ **Functions**: 100%
+- ✅ **Lines**: 100%
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Estructura de Tests
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Los tests están organizados en el directorio `__tests__/` siguiendo la estructura del proyecto:
+
+```
+__tests__/
+└── app/
+    └── api/
+        └── me/
+            └── route.test.ts
+```
+
+### Ejecutar Tests Específicos
+
+Para ejecutar tests de un archivo específico:
+
+```bash
+pnpm test __tests__/app/api/me/route.test.ts
+```
+
+## Tecnologías
+
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS
+- **UI Components**: Radix UI
+- **Testing**: Jest, Testing Library
+- **Package Manager**: pnpm
