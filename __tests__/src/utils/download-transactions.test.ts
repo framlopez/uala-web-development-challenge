@@ -104,7 +104,7 @@ describe("downloadTransactions", () => {
       });
 
       expect(global.fetch).toHaveBeenCalledWith(
-        "/api/me/transactions/download?fechaDesde=2024-01-01&fechaHasta=2024-01-31",
+        "/api/me/transactions/download?dateFrom=2024-01-01&dateTo=2024-01-31",
         {
           signal: expect.any(AbortSignal),
           headers: { Accept: "text/csv" },

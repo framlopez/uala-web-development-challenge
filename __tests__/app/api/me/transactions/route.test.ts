@@ -109,7 +109,7 @@ describe("/api/me/transactions route", () => {
       (NextResponse.json as jest.Mock).mockReturnValue(mockNextResponse);
 
       const request = createMockRequest(
-        "http://localhost:3000/api/me/transactions?metodosCobro=link"
+        "http://localhost:3000/api/me/transactions?paymentMethods=link"
       );
       const result = await GET(request);
 
@@ -168,7 +168,7 @@ describe("/api/me/transactions route", () => {
       (NextResponse.json as jest.Mock).mockReturnValue(mockNextResponse);
 
       const request = createMockRequest(
-        "http://localhost:3000/api/me/transactions?metodosCobro=link&metodosCobro=qr"
+        "http://localhost:3000/api/me/transactions?paymentMethods=link&paymentMethods=qr"
       );
       const result = await GET(request);
 
@@ -179,7 +179,7 @@ describe("/api/me/transactions route", () => {
       expect(result).toBe(mockNextResponse);
     });
 
-    it("debe aplicar filtro por tarjeta", async () => {
+    it("debe aplicar filtro por card", async () => {
       const mockTransactions = [
         {
           id: "1",
@@ -218,18 +218,18 @@ describe("/api/me/transactions route", () => {
       (NextResponse.json as jest.Mock).mockReturnValue(mockNextResponse);
 
       const request = createMockRequest(
-        "http://localhost:3000/api/me/transactions?tarjeta=visa"
+        "http://localhost:3000/api/me/transactions?card=visa"
       );
       const result = await GET(request);
 
       expect(NextResponse.json).toHaveBeenCalledWith({
-        transactions: [mockTransactions[0]], // Solo la transacción con tarjeta "visa"
+        transactions: [mockTransactions[0]], // Solo la transacción con card "visa"
         metadata: mockResponse.metadata,
       });
       expect(result).toBe(mockNextResponse);
     });
 
-    it("debe aplicar filtro por múltiples tarjetas", async () => {
+    it("debe aplicar filtro por múltiples cards", async () => {
       const mockTransactions = [
         {
           id: "1",
@@ -277,7 +277,7 @@ describe("/api/me/transactions route", () => {
       (NextResponse.json as jest.Mock).mockReturnValue(mockNextResponse);
 
       const request = createMockRequest(
-        "http://localhost:3000/api/me/transactions?tarjeta=visa&tarjeta=mastercard"
+        "http://localhost:3000/api/me/transactions?card=visa&card=mastercard"
       );
       const result = await GET(request);
 
@@ -288,7 +288,7 @@ describe("/api/me/transactions route", () => {
       expect(result).toBe(mockNextResponse);
     });
 
-    it("debe aplicar filtro por cuotas", async () => {
+    it("debe aplicar filtro por installments", async () => {
       const mockTransactions = [
         {
           id: "1",
@@ -336,7 +336,7 @@ describe("/api/me/transactions route", () => {
       (NextResponse.json as jest.Mock).mockReturnValue(mockNextResponse);
 
       const request = createMockRequest(
-        "http://localhost:3000/api/me/transactions?cuotas=3&cuotas=6"
+        "http://localhost:3000/api/me/transactions?installments=3&installments=6"
       );
       const result = await GET(request);
 
@@ -395,7 +395,7 @@ describe("/api/me/transactions route", () => {
       (NextResponse.json as jest.Mock).mockReturnValue(mockNextResponse);
 
       const request = createMockRequest(
-        "http://localhost:3000/api/me/transactions?montoMin=2000&montoMax=6000"
+        "http://localhost:3000/api/me/transactions?amountMin=2000&amountMax=6000"
       );
       const result = await GET(request);
 
@@ -445,7 +445,7 @@ describe("/api/me/transactions route", () => {
       (NextResponse.json as jest.Mock).mockReturnValue(mockNextResponse);
 
       const request = createMockRequest(
-        "http://localhost:3000/api/me/transactions?montoMin=3000"
+        "http://localhost:3000/api/me/transactions?amountMin=3000"
       );
       const result = await GET(request);
 
@@ -495,7 +495,7 @@ describe("/api/me/transactions route", () => {
       (NextResponse.json as jest.Mock).mockReturnValue(mockNextResponse);
 
       const request = createMockRequest(
-        "http://localhost:3000/api/me/transactions?montoMax=3000"
+        "http://localhost:3000/api/me/transactions?amountMax=3000"
       );
       const result = await GET(request);
 
@@ -554,7 +554,7 @@ describe("/api/me/transactions route", () => {
       (NextResponse.json as jest.Mock).mockReturnValue(mockNextResponse);
 
       const request = createMockRequest(
-        "http://localhost:3000/api/me/transactions?fechaDesde=2024-07-01&fechaHasta=2024-09-30"
+        "http://localhost:3000/api/me/transactions?dateFrom=2024-07-01&dateTo=2024-09-30"
       );
       const result = await GET(request);
 
@@ -604,7 +604,7 @@ describe("/api/me/transactions route", () => {
       (NextResponse.json as jest.Mock).mockReturnValue(mockNextResponse);
 
       const request = createMockRequest(
-        "http://localhost:3000/api/me/transactions?fechaDesde=2024-07-01"
+        "http://localhost:3000/api/me/transactions?dateFrom=2024-07-01"
       );
       const result = await GET(request);
 
@@ -654,7 +654,7 @@ describe("/api/me/transactions route", () => {
       (NextResponse.json as jest.Mock).mockReturnValue(mockNextResponse);
 
       const request = createMockRequest(
-        "http://localhost:3000/api/me/transactions?fechaHasta=2024-07-31"
+        "http://localhost:3000/api/me/transactions?dateTo=2024-07-31"
       );
       const result = await GET(request);
 
@@ -713,7 +713,7 @@ describe("/api/me/transactions route", () => {
       (NextResponse.json as jest.Mock).mockReturnValue(mockNextResponse);
 
       const request = createMockRequest(
-        "http://localhost:3000/api/me/transactions?tarjeta=visa&montoMin=2000&fechaDesde=2024-09-01"
+        "http://localhost:3000/api/me/transactions?card=visa&amountMin=2000&dateFrom=2024-09-01"
       );
       const result = await GET(request);
 
