@@ -14,23 +14,23 @@ export class CSVGenerator {
     day: "2-digit",
   };
 
-  private static readonly DEFAULT_FILENAME = "transacciones";
+  private static readonly DEFAULT_FILENAME = "transactions";
 
   /**
-   * Escapa un campo CSV según las reglas estándar
+   * Escapes a CSV field according to standard rules
    */
   private static escapeCSVField(field: unknown): string {
     if (field === null || field === undefined) return "";
 
     const stringField = String(field);
 
-    // Si el campo contiene comas, comillas o saltos de línea, lo envolvemos en comillas
+    // If the field contains commas, quotes or line breaks, we wrap it in quotes
     if (
       stringField.includes(",") ||
       stringField.includes('"') ||
       stringField.includes("\n")
     ) {
-      // Escapamos las comillas dobles duplicándolas
+      // Escape double quotes by duplicating them
       return `"${stringField.replace(/"/g, '""')}"`;
     }
 
@@ -38,7 +38,7 @@ export class CSVGenerator {
   }
 
   /**
-   * Formatea una fecha según el formato especificado
+   * Formats a date according to the specified format
    */
   private static formatDate(
     date: string | Date,
@@ -49,7 +49,7 @@ export class CSVGenerator {
   }
 
   /**
-   * Genera el contenido CSV completo
+   * Generates the complete CSV content
    */
   static getCSV(
     transactions: Transaction[],
@@ -57,12 +57,12 @@ export class CSVGenerator {
   ): string {
     const headers = [
       "ID",
-      "Monto",
-      "Tarjeta",
-      "Cuotas",
-      "Método de Pago",
-      "Fecha de Creación",
-      "Última Actualización",
+      "Amount",
+      "Card",
+      "Installments",
+      "Payment Method",
+      "Created At",
+      "Updated At",
     ];
 
     const rows = transactions.map((transaction) => [
@@ -83,7 +83,7 @@ export class CSVGenerator {
   }
 
   /**
-   * Genera los headers HTTP para la descarga del CSV
+   * Generates HTTP headers for CSV download
    */
   static getHeaders(filename?: string, customFilename?: string): Headers {
     const finalFilename = customFilename || filename || this.DEFAULT_FILENAME;

@@ -158,7 +158,7 @@ describe("downloadTransactions", () => {
       expect(window.URL.createObjectURL).toHaveBeenCalledWith(mockBlob);
       expect(mockLink.href).toBe("mock-blob-url");
       expect(mockLink.download).toBe(
-        "transacciones_2024-01-01_a_2024-01-31.csv"
+        "transactions_2024-01-01_to_2024-01-31.csv"
       );
       expect(mockLink.click).toHaveBeenCalled();
       expect(document.body.appendChild).toHaveBeenCalledWith(mockLink);
@@ -302,7 +302,7 @@ describe("downloadTransactions", () => {
       });
 
       expect(mockLink.download).toBe(
-        "transacciones_2024-12-25_a_2024-12-31.csv"
+        "transactions_2024-12-25_to_2024-12-31.csv"
       );
     });
   });

@@ -18,56 +18,56 @@ export function useFilters() {
     defaultValues: defaultFilters,
   });
 
-  // Función para actualizar la URL con los filtros
+  // Function to update URL with filters
   const updateURL = useCallback(
     (filters: Filters) => {
       const params = new URLSearchParams(searchParams.toString());
 
-      // Limpiar filtros existentes
-      params.delete("metodosCobro");
-      params.delete("fechaDesde");
-      params.delete("fechaHasta");
-      params.delete("tarjeta");
-      params.delete("cuotas");
-      params.delete("montoMin");
-      params.delete("montoMax");
+      // Clear existing filters
+      params.delete("paymentMethods");
+      params.delete("dateFrom");
+      params.delete("dateTo");
+      params.delete("card");
+      params.delete("installments");
+      params.delete("amountMin");
+      params.delete("amountMax");
 
-      // Agregar filtros activos
-      if (filters.metodosCobro.length > 0) {
-        filters.metodosCobro.forEach((method) => {
-          params.append("metodosCobro", method);
+      // Add active filters
+      if (filters.paymentMethods.length > 0) {
+        filters.paymentMethods.forEach((method) => {
+          params.append("paymentMethods", method);
         });
       }
 
-      if (filters.fecha.desde) {
-        params.set("fechaDesde", filters.fecha.desde);
+      if (filters.date.from) {
+        params.set("dateFrom", filters.date.from);
       }
 
-      if (filters.fecha.hasta) {
-        params.set("fechaHasta", filters.fecha.hasta);
+      if (filters.date.to) {
+        params.set("dateTo", filters.date.to);
       }
 
-      if (filters.tarjeta.length > 0) {
-        filters.tarjeta.forEach((card) => {
-          params.append("tarjeta", card);
+      if (filters.card.length > 0) {
+        filters.card.forEach((card) => {
+          params.append("card", card);
         });
       }
 
-      if (filters.cuotas.length > 0) {
-        filters.cuotas.forEach((cuota) => {
-          params.append("cuotas", cuota);
+      if (filters.installments.length > 0) {
+        filters.installments.forEach((installment) => {
+          params.append("installments", installment);
         });
       }
 
-      if (filters.monto.min !== undefined) {
-        params.set("montoMin", filters.monto.min.toString());
+      if (filters.amount.min !== undefined) {
+        params.set("amountMin", filters.amount.min.toString());
       }
 
-      if (filters.monto.max !== undefined) {
-        params.set("montoMax", filters.monto.max.toString());
+      if (filters.amount.max !== undefined) {
+        params.set("amountMax", filters.amount.max.toString());
       }
 
-      // Actualizar URL sin recargar la página
+      // Update URL without reloading the page
       const newURL = params.toString()
         ? `?${params.toString()}`
         : window.location.pathname;
@@ -77,14 +77,14 @@ export function useFilters() {
     [router, searchParams]
   );
 
-  // Función para cargar filtros desde la URL
+  // Function to load filters from URL
   const loadFiltersFromURL = useCallback(() => {
     const filters = { ...defaultFilters };
 
-    // Métodos de cobro
-    const metodosCobro = searchParams.getAll("metodosCobro");
-    if (metodosCobro.length > 0) {
-      filters.metodosCobro = metodosCobro as (
+    // Payment methods
+    const paymentMethods = searchParams.getAll("paymentMethods");
+    if (paymentMethods.length > 0) {
+      filters.paymentMethods = paymentMethods as (
         | "link"
         | "qr"
         | "mpos"
@@ -92,37 +92,37 @@ export function useFilters() {
       )[];
     }
 
-    // Fechas
-    const fechaDesde = searchParams.get("fechaDesde");
-    const fechaHasta = searchParams.get("fechaHasta");
-    if (fechaDesde || fechaHasta) {
-      filters.fecha = {
-        desde: fechaDesde || undefined,
-        hasta: fechaHasta || undefined,
+    // Dates
+    const dateFrom = searchParams.get("dateFrom");
+    const dateTo = searchParams.get("dateTo");
+    if (dateFrom || dateTo) {
+      filters.date = {
+        from: dateFrom || undefined,
+        to: dateTo || undefined,
       };
     }
 
-    // Tarjetas
-    const tarjeta = searchParams.getAll("tarjeta");
-    if (tarjeta.length > 0) {
-      filters.tarjeta = tarjeta as ("visa" | "mastercard" | "amex")[];
+    // Cards
+    const card = searchParams.getAll("card");
+    if (card.length > 0) {
+      filters.card = card as ("visa" | "mastercard" | "amex")[];
     }
 
-    // Cuotas
-    const cuotas = searchParams.get("cuotas");
-    if (cuotas) {
-      filters.cuotas = [cuotas as "1" | "2" | "3" | "6" | "12"];
+    // Installments
+    const installments = searchParams.get("installments");
+    if (installments) {
+      filters.installments = [installments as "1" | "2" | "3" | "6" | "12"];
     }
 
-    // Montos - Validar que sean números válidos
-    const montoMin = searchParams.get("montoMin");
-    const montoMax = searchParams.get("montoMax");
-    if (montoMin || montoMax) {
-      const minValue = montoMin ? parseFloat(montoMin) : undefined;
-      const maxValue = montoMax ? parseFloat(montoMax) : undefined;
+    // Amounts - Validate that they are valid numbers
+    const amountMin = searchParams.get("amountMin");
+    const amountMax = searchParams.get("amountMax");
+    if (amountMin || amountMax) {
+      const minValue = amountMin ? parseFloat(amountMin) : undefined;
+      const maxValue = amountMax ? parseFloat(amountMax) : undefined;
 
-      // Solo incluir valores si son números válidos, sino usar undefined
-      filters.monto = {
+      // Only include values if they are valid numbers, otherwise use undefined
+      filters.amount = {
         min:
           minValue && !isNaN(minValue) && isFinite(minValue)
             ? minValue
@@ -137,7 +137,7 @@ export function useFilters() {
     return filters;
   }, [searchParams]);
 
-  // Inicializar filtros desde URL al montar el componente
+  // Initialize filters from URL when component mounts
   useEffect(() => {
     if (!isInitialized) {
       const urlFilters = loadFiltersFromURL();
@@ -146,25 +146,25 @@ export function useFilters() {
     }
   }, [form, loadFiltersFromURL, isInitialized]);
 
-  // Función para aplicar filtros
+  // Function to apply filters
   const applyFilters = useCallback(
     async (data: Filters) => {
       updateURL(data);
-      // Hacer mutate de todas las transacciones para refrescar los datos
+      // Make mutate of all transactions to refresh data
       await mutate("/api/me/transactions");
     },
     [updateURL, mutate]
   );
 
-  // Función para limpiar todos los filtros
+  // Function to clear all filters
   const clearAllFilters = useCallback(() => {
     form.reset(defaultFilters);
     updateURL(defaultFilters);
-    // Hacer mutate de todas las transacciones para refrescar los datos
+    // Make mutate of all transactions to refresh data
     mutate("/api/me/transactions");
   }, [form, updateURL, mutate]);
 
-  // Función para verificar si hay filtros activos
+  // Function to check if there are active filters
   const hasActiveFilters = useCallback((filters: Filters) => {
     return hasAnyActiveFilter(filters);
   }, []);

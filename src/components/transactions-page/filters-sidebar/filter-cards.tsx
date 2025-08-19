@@ -7,9 +7,9 @@ import FilterButton from "./filter-button";
 
 export default function FilterCards() {
   const { watch, setValue } = useFormContext<Filters>();
-  const selectedCards = watch("tarjeta");
+  const selectedCards = watch("card");
 
-  // Asegurar que selectedCards siempre sea un array
+  // Ensure selectedCards is always an array
   const safeSelectedCards = Array.isArray(selectedCards) ? selectedCards : [];
 
   const toggleCard = (card: (typeof CARD_OPTIONS)[number]["value"]) => {
@@ -22,7 +22,7 @@ export default function FilterCards() {
       currentCards.push(card);
     }
 
-    setValue("tarjeta", currentCards);
+    setValue("card", currentCards);
   };
 
   return (

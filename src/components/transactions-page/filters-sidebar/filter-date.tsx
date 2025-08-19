@@ -8,33 +8,33 @@ import { useFormContext } from "react-hook-form";
 
 export default function FilterDate() {
   const { register, setValue, watch } = useFormContext<Filters>();
-  const dateRange = watch("fecha");
+  const dateRange = watch("date");
 
   const handleSelect = (range: { from?: Date; to?: Date } | undefined) => {
     if (!range) return;
 
     if (range.from && range.to) {
-      // Rango completo seleccionado
-      setValue("fecha", {
-        desde: range.from.toISOString(),
-        hasta: range.to.toISOString(),
+      // Complete range selected
+      setValue("date", {
+        from: range.from.toISOString(),
+        to: range.to.toISOString(),
       });
     } else if (range.from) {
-      // Solo fecha inicial
-      setValue("fecha", {
-        desde: range.from.toISOString(),
-        hasta: undefined,
+      // Only initial date
+      setValue("date", {
+        from: range.from.toISOString(),
+        to: undefined,
       });
     }
   };
 
   const clearDates = () => {
-    setValue("fecha", { desde: undefined, hasta: undefined });
+    setValue("date", { from: undefined, to: undefined });
   };
 
-  // Preparar fechas para el calendario de shadcn
-  const fromDate = dateRange.desde ? new Date(dateRange.desde) : undefined;
-  const toDate = dateRange.hasta ? new Date(dateRange.hasta) : undefined;
+  // Prepare dates for shadcn calendar
+  const fromDate = dateRange?.from ? new Date(dateRange.from) : undefined;
+  const toDate = dateRange?.to ? new Date(dateRange.to) : undefined;
 
   const formatDate = (date: string | undefined) => {
     if (!date) return "";
@@ -42,16 +42,16 @@ export default function FilterDate() {
   };
 
   const selectedItems = [];
-  if (dateRange.desde) {
+  if (dateRange?.from) {
     selectedItems.push({
-      value: dateRange.desde,
-      label: `Desde: ${formatDate(dateRange.desde)}`,
+      value: dateRange.from,
+      label: `Desde: ${formatDate(dateRange.from)}`,
     });
   }
-  if (dateRange.hasta) {
+  if (dateRange?.to) {
     selectedItems.push({
-      value: dateRange.hasta,
-      label: `Hasta: ${formatDate(dateRange.hasta)}`,
+      value: dateRange.to,
+      label: `Hasta: ${formatDate(dateRange.to)}`,
     });
   }
 
@@ -71,8 +71,8 @@ export default function FilterDate() {
         />
       </div>
 
-      {/* Botón para borrar fechas seleccionadas */}
-      {(dateRange.desde || dateRange.hasta) && (
+      {/* Button to clear selected dates */}
+      {(dateRange?.from || dateRange?.to) && (
         <div className="flex justify-center mt-4">
           <button
             type="button"
@@ -84,9 +84,9 @@ export default function FilterDate() {
         </div>
       )}
 
-      {/* Campos ocultos para react-hook-form */}
-      <input type="hidden" {...register("fecha.desde")} />
-      <input type="hidden" {...register("fecha.hasta")} />
+      {/* Hidden fields for react-hook-form */}
+      <input type="hidden" {...register("date.from")} />
+      <input type="hidden" {...register("date.to")} />
     </div>
   );
 }

@@ -75,11 +75,11 @@ export default function FiltersSidebar({
 
   // Estado para controlar la visibilidad de cada filtro independientemente de sus valores
   const [filterVisibility, setFilterVisibility] = useState({
-    fecha: false,
-    monto: false,
-    tarjeta: false,
-    cuotas: false,
-    metodosCobro: false,
+    date: false,
+    amount: false,
+    card: false,
+    installments: false,
+    paymentMethods: false,
   });
 
   // Bloquear/desbloquear scroll del body cuando el sidebar está abierto
@@ -99,13 +99,15 @@ export default function FiltersSidebar({
   const onSubmit = (data: Filters) => {
     // Solo aplicar filtros que estén activos (visibles) y limpiar valores NaN
     const activeFilters: Filters = {
-      metodosCobro: filterVisibility.metodosCobro ? data.metodosCobro : [],
-      tarjeta: filterVisibility.tarjeta ? data.tarjeta : [],
-      cuotas: filterVisibility.cuotas ? data.cuotas : [],
-      fecha: filterVisibility.fecha ? data.fecha : {},
-      monto: filterVisibility.monto
+      paymentMethods: filterVisibility.paymentMethods
+        ? data.paymentMethods
+        : [],
+      card: filterVisibility.card ? data.card : [],
+      installments: filterVisibility.installments ? data.installments : [],
+      date: filterVisibility.date ? data.date : {},
+      amount: filterVisibility.amount
         ? (() => {
-            const monto = data.monto;
+            const amount = data.amount;
             // Validar que los valores sean números válidos
             const isValidNumber = (value: unknown): value is number => {
               return (
@@ -114,8 +116,8 @@ export default function FiltersSidebar({
             };
 
             return {
-              min: isValidNumber(monto.min) ? monto.min : undefined,
-              max: isValidNumber(monto.max) ? monto.max : undefined,
+              min: isValidNumber(amount.min) ? amount.min : undefined,
+              max: isValidNumber(amount.max) ? amount.max : undefined,
             };
           })()
         : {},
@@ -135,18 +137,18 @@ export default function FiltersSidebar({
     // Limpiar valores NaN antes de la validación
     const cleanedData = {
       ...formData,
-      monto: {
+      amount: {
         min:
-          typeof formData.monto.min === "number" &&
-          !isNaN(formData.monto.min) &&
-          isFinite(formData.monto.min)
-            ? formData.monto.min
+          typeof formData.amount.min === "number" &&
+          !isNaN(formData.amount.min) &&
+          isFinite(formData.amount.min)
+            ? formData.amount.min
             : undefined,
         max:
-          typeof formData.monto.max === "number" &&
-          !isNaN(formData.monto.max) &&
-          isFinite(formData.monto.max)
-            ? formData.monto.max
+          typeof formData.amount.max === "number" &&
+          !isNaN(formData.amount.max) &&
+          isFinite(formData.amount.max)
+            ? formData.amount.max
             : undefined,
       },
     };
@@ -220,28 +222,28 @@ export default function FiltersSidebar({
                   icon={CalendarIcon}
                   text="Fecha"
                   onClick={() => {
-                    const isCurrentlyActive = filterVisibility.fecha;
+                    const isCurrentlyActive = filterVisibility.date;
                     if (isCurrentlyActive) {
                       // Si está activo, desactivarlo
                       setFilterVisibility((prev) => ({
                         ...prev,
-                        fecha: false,
+                        date: false,
                       }));
                       // Resetear completamente el filtro de fecha a valores por defecto
-                      form.setValue("fecha", {
-                        desde: undefined,
-                        hasta: undefined,
+                      form.setValue("date", {
+                        from: undefined,
+                        to: undefined,
                       });
                       // También limpiar cualquier error de validación
-                      form.clearErrors("fecha");
+                      form.clearErrors("date");
                       // Forzar la validación para asegurar que los valores sean correctos
-                      form.trigger("fecha");
+                      form.trigger("date");
                     } else {
                       // Si está inactivo, activarlo
-                      setFilterVisibility((prev) => ({ ...prev, fecha: true }));
+                      setFilterVisibility((prev) => ({ ...prev, date: true }));
                     }
                   }}
-                  isActive={filterVisibility.fecha}
+                  isActive={filterVisibility.date}
                 >
                   <div className="p-4">
                     <FilterDate />
@@ -253,26 +255,26 @@ export default function FiltersSidebar({
                   icon={CardIcon}
                   text="Tarjeta"
                   onClick={() => {
-                    const isCurrentlyActive = filterVisibility.tarjeta;
+                    const isCurrentlyActive = filterVisibility.card;
                     if (isCurrentlyActive) {
                       // Si está activo, desactivarlo
                       setFilterVisibility((prev) => ({
                         ...prev,
-                        tarjeta: false,
+                        card: false,
                       }));
                       // Limpiar completamente los campos del formulario
-                      form.setValue("tarjeta", []);
+                      form.setValue("card", []);
                       // También limpiar cualquier error de validación
-                      form.clearErrors("tarjeta");
+                      form.clearErrors("card");
                     } else {
                       // Si está inactivo, activarlo
                       setFilterVisibility((prev) => ({
                         ...prev,
-                        tarjeta: true,
+                        card: true,
                       }));
                     }
                   }}
-                  isActive={filterVisibility.tarjeta}
+                  isActive={filterVisibility.card}
                 >
                   <div className="p-4">
                     <FilterCards />
@@ -284,26 +286,26 @@ export default function FiltersSidebar({
                   icon={ProgramDepositIcon}
                   text="Cuotas"
                   onClick={() => {
-                    const isCurrentlyActive = filterVisibility.cuotas;
+                    const isCurrentlyActive = filterVisibility.installments;
                     if (isCurrentlyActive) {
                       // Si está activo, desactivarlo
                       setFilterVisibility((prev) => ({
                         ...prev,
-                        cuotas: false,
+                        installments: false,
                       }));
                       // Limpiar completamente los campos del formulario
-                      form.setValue("cuotas", []);
+                      form.setValue("installments", []);
                       // También limpiar cualquier error de validación
-                      form.clearErrors("cuotas");
+                      form.clearErrors("installments");
                     } else {
                       // Si está inactivo, activarlo
                       setFilterVisibility((prev) => ({
                         ...prev,
-                        cuotas: true,
+                        installments: true,
                       }));
                     }
                   }}
-                  isActive={filterVisibility.cuotas}
+                  isActive={filterVisibility.installments}
                 >
                   <div className="p-4">
                     <FilterInstallments />
@@ -315,28 +317,31 @@ export default function FiltersSidebar({
                   icon={CommissionIcon}
                   text="Monto"
                   onClick={() => {
-                    const isCurrentlyActive = filterVisibility.monto;
+                    const isCurrentlyActive = filterVisibility.amount;
                     if (isCurrentlyActive) {
                       // Si está activo, desactivarlo
                       setFilterVisibility((prev) => ({
                         ...prev,
-                        monto: false,
+                        amount: false,
                       }));
                       // Resetear completamente el filtro de monto a valores por defecto
-                      form.setValue("monto", {
+                      form.setValue("amount", {
                         min: undefined,
                         max: undefined,
                       });
                       // También limpiar cualquier error de validación
-                      form.clearErrors("monto");
+                      form.clearErrors("amount");
                       // Forzar la validación para asegurar que los valores sean correctos
-                      form.trigger("monto");
+                      form.trigger("amount");
                     } else {
                       // Si está inactivo, activarlo
-                      setFilterVisibility((prev) => ({ ...prev, monto: true }));
+                      setFilterVisibility((prev) => ({
+                        ...prev,
+                        amount: true,
+                      }));
                     }
                   }}
-                  isActive={filterVisibility.monto}
+                  isActive={filterVisibility.amount}
                 >
                   <div className="p-4">
                     <FilterAmount />
@@ -348,26 +353,26 @@ export default function FiltersSidebar({
                   icon={CategoriesIcon}
                   text="Métodos de cobro"
                   onClick={() => {
-                    const isCurrentlyActive = filterVisibility.metodosCobro;
+                    const isCurrentlyActive = filterVisibility.paymentMethods;
                     if (isCurrentlyActive) {
                       // Si está activo, desactivarlo
                       setFilterVisibility((prev) => ({
                         ...prev,
-                        metodosCobro: false,
+                        paymentMethods: false,
                       }));
                       // Limpiar completamente los campos del formulario
-                      form.setValue("metodosCobro", []);
+                      form.setValue("paymentMethods", []);
                       // También limpiar cualquier error de validación
-                      form.clearErrors("metodosCobro");
+                      form.clearErrors("paymentMethods");
                     } else {
                       // Si está inactivo, activarlo
                       setFilterVisibility((prev) => ({
                         ...prev,
-                        metodosCobro: true,
+                        paymentMethods: true,
                       }));
                     }
                   }}
-                  isActive={filterVisibility.metodosCobro}
+                  isActive={filterVisibility.paymentMethods}
                 >
                   <div className="p-4">
                     <FilterMethods />

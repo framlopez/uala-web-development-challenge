@@ -7,17 +7,17 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
 
     // Obtengo los filtros de selección múltiple
-    const metodosCobro = searchParams.getAll("metodosCobro");
-    const tarjeta = searchParams.getAll("tarjeta");
-    const cuotas = searchParams.getAll("cuotas");
+    const paymentMethods = searchParams.getAll("paymentMethods");
+    const card = searchParams.getAll("card");
+    const installments = searchParams.getAll("installments");
 
     // Obtengo los filtros de fecha
-    const fechaDesde = searchParams.get("fechaDesde");
-    const fechaHasta = searchParams.get("fechaHasta");
+    const dateFrom = searchParams.get("dateFrom");
+    const dateTo = searchParams.get("dateTo");
 
     // Obtengo los filtros de precio
-    const montoMin = searchParams.get("montoMin");
-    const montoMax = searchParams.get("montoMax");
+    const amountMin = searchParams.get("amountMin");
+    const amountMax = searchParams.get("amountMax");
 
     // NTH: Falta validar que el formato de los filtros sea correcto
     // NTH: Obtener la información filtrada desde la base de datos
@@ -35,42 +35,42 @@ export async function GET(request: NextRequest) {
     let filteredTransactions = data.transactions;
 
     // Filtro por métodos de cobro
-    if (metodosCobro.length > 0) {
+    if (paymentMethods.length > 0) {
       filteredTransactions = filteredTransactions.filter((transaction) =>
-        metodosCobro.includes(transaction.paymentMethod)
+        paymentMethods.includes(transaction.paymentMethod)
       );
     }
 
     // Filtro por tarjeta
-    if (tarjeta.length > 0) {
+    if (card.length > 0) {
       filteredTransactions = filteredTransactions.filter((transaction) =>
-        tarjeta.includes(transaction.card)
+        card.includes(transaction.card)
       );
     }
 
     // Filtro por cuotas
-    if (cuotas.length > 0) {
+    if (installments.length > 0) {
       filteredTransactions = filteredTransactions.filter((transaction) =>
-        cuotas.includes(transaction.installments.toString())
+        installments.includes(transaction.installments.toString())
       );
     }
 
     // Filtro por monto
-    if (montoMin || montoMax) {
+    if (amountMin || amountMax) {
       filteredTransactions = filteredTransactions.filter((transaction) => {
-        const min = montoMin ? parseFloat(montoMin) : 0;
-        const max = montoMax ? parseFloat(montoMax) : Infinity;
+        const min = amountMin ? parseFloat(amountMin) : 0;
+        const max = amountMax ? parseFloat(amountMax) : Infinity;
         return transaction.amount >= min && transaction.amount <= max;
       });
     }
 
     // Filtro por fecha
-    if (fechaDesde || fechaHasta) {
+    if (dateFrom || dateTo) {
       filteredTransactions = filteredTransactions.filter((transaction) => {
         const transactionDate = new Date(transaction.createdAt);
-        const desde = fechaDesde ? new Date(fechaDesde) : new Date(0);
-        const hasta = fechaHasta ? new Date(fechaHasta) : new Date();
-        return transactionDate >= desde && transactionDate <= hasta;
+        const from = dateFrom ? new Date(dateFrom) : new Date(0);
+        const to = dateTo ? new Date(dateTo) : new Date();
+        return transactionDate >= from && transactionDate <= to;
       });
     }
 

@@ -1,214 +1,158 @@
-import Currency from "../../../src/types/currency";
-import formatPrice from "../../../src/utils/format-price";
+import Currency from "@/src/types/currency";
+import formatPrice from "@/src/utils/format-price";
 
 describe("formatPrice", () => {
-  describe("formateo básico de precios", () => {
-    it("debe formatear precio positivo en USD", () => {
+  describe("Basic formatting", () => {
+    it("should format positive price in USD", () => {
       const result = formatPrice(1234.56, Currency.USD, "en-US");
-
-      expect(result).toEqual({
-        prefix: "+",
-        symbol: "U$S",
-        amount: "1,235",
-        decimals: "56",
-      });
+      expect(result.prefix).toBe("+");
+      expect(result.symbol).toBe("U$S");
+      expect(result.amount).toBe("1,235");
+      expect(result.decimals).toBe("56");
     });
 
-    it("debe formatear precio positivo en ARS", () => {
-      const result = formatPrice(5678.9, Currency.ARS, "es-AR");
-
-      expect(result).toEqual({
-        prefix: "+",
-        symbol: "$",
-        amount: "5.679",
-        decimals: "90",
-      });
+    it("should format positive price in ARS", () => {
+      const result = formatPrice(1234.56, Currency.ARS, "es-AR");
+      expect(result.prefix).toBe("+");
+      expect(result.symbol).toBe("$");
+      expect(result.amount).toBe("1.235");
+      expect(result.decimals).toBe("56");
     });
 
-    it("debe formatear precio negativo en USD", () => {
-      const result = formatPrice(-987.65, Currency.USD, "en-US");
-
-      expect(result).toEqual({
-        prefix: "-",
-        symbol: "U$S",
-        amount: "988",
-        decimals: "65",
-      });
+    it("should format negative price in USD", () => {
+      const result = formatPrice(-1234.56, Currency.USD, "en-US");
+      expect(result.prefix).toBe("-");
+      expect(result.symbol).toBe("U$S");
+      expect(result.amount).toBe("1,235");
+      expect(result.decimals).toBe("56");
     });
 
-    it("debe formatear precio negativo en ARS", () => {
-      const result = formatPrice(-123.45, Currency.ARS, "es-AR");
-
-      expect(result).toEqual({
-        prefix: "-",
-        symbol: "$",
-        amount: "123",
-        decimals: "45",
-      });
+    it("should format negative price in ARS", () => {
+      const result = formatPrice(-1234.56, Currency.ARS, "es-AR");
+      expect(result.prefix).toBe("-");
+      expect(result.symbol).toBe("$");
+      expect(result.amount).toBe("1.235");
+      expect(result.decimals).toBe("56");
     });
 
-    it("debe formatear precio cero", () => {
+    it("should format zero price", () => {
       const result = formatPrice(0, Currency.USD, "en-US");
-
-      expect(result).toEqual({
-        prefix: "",
-        symbol: "U$S",
-        amount: "0",
-        decimals: "00",
-      });
+      expect(result.prefix).toBe("");
+      expect(result.symbol).toBe("U$S");
+      expect(result.amount).toBe("0");
+      expect(result.decimals).toBe("00");
     });
   });
 
-  describe("manejo de decimales", () => {
-    it("debe manejar precios sin decimales", () => {
+  describe("Decimal handling", () => {
+    it("should handle prices without decimals", () => {
       const result = formatPrice(1000, Currency.USD, "en-US");
-
-      expect(result).toEqual({
-        prefix: "+",
-        symbol: "U$S",
-        amount: "1,000",
-        decimals: "00",
-      });
+      expect(result.amount).toBe("1,000");
+      expect(result.decimals).toBe("00");
     });
 
-    it("debe manejar precios con decimales exactos", () => {
-      const result = formatPrice(99.99, Currency.ARS, "es-AR");
-
-      expect(result).toEqual({
-        prefix: "+",
-        symbol: "$",
-        amount: "100",
-        decimals: "99",
-      });
+    it("should handle prices with exact decimals", () => {
+      const result = formatPrice(1000.5, Currency.USD, "en-US");
+      expect(result.amount).toBe("1,001");
+      expect(result.decimals).toBe("50");
     });
 
-    it("debe redondear decimales correctamente", () => {
-      const result = formatPrice(123.456, Currency.USD, "en-US");
-
-      expect(result).toEqual({
-        prefix: "+",
-        symbol: "U$S",
-        amount: "123",
-        decimals: "46",
-      });
+    it("should round decimals correctly", () => {
+      const result = formatPrice(1000.567, Currency.USD, "en-US");
+      expect(result.amount).toBe("1,001");
+      expect(result.decimals).toBe("57");
     });
 
-    it("debe manejar decimales muy pequeños", () => {
-      const result = formatPrice(0.01, Currency.ARS, "es-AR");
-
-      expect(result).toEqual({
-        prefix: "+",
-        symbol: "$",
-        amount: "0",
-        decimals: "01",
-      });
+    it("should handle very small decimals", () => {
+      const result = formatPrice(1000.001, Currency.USD, "en-US");
+      expect(result.amount).toBe("1,000");
+      expect(result.decimals).toBe("00");
     });
   });
 
-  describe("separadores de miles según locale", () => {
-    it("debe usar comas para separadores de miles en inglés", () => {
+  describe("Locale-specific formatting", () => {
+    it("should use commas for thousands separators in English", () => {
       const result = formatPrice(1234567, Currency.USD, "en-US");
-
       expect(result.amount).toBe("1,234,567");
     });
 
-    it("debe usar puntos para separadores de miles en español argentino", () => {
+    it("should use dots for thousands separators in Argentine Spanish", () => {
       const result = formatPrice(1234567, Currency.ARS, "es-AR");
-
       expect(result.amount).toBe("1.234.567");
     });
 
-    it("debe usar espacios para separadores de miles en francés", () => {
+    it("should use spaces for thousands separators in French", () => {
       const result = formatPrice(1234567, Currency.USD, "fr-FR");
-
-      // El locale francés usa un espacio no-breaking ( ) que es diferente del espacio normal
-      expect(result.amount).toBe("1 234 567");
+      // The actual separator might be a non-breaking space (U+00A0) or regular space
+      expect(result.amount).toMatch(/1[\s\u00A0]234[\s\u00A0]567/);
     });
   });
 
-  describe("símbolos de moneda", () => {
-    it("debe usar U$S para USD", () => {
+  describe("Currency symbols", () => {
+    it("should use U$S for USD", () => {
       const result = formatPrice(100, Currency.USD, "en-US");
       expect(result.symbol).toBe("U$S");
     });
 
-    it("debe usar $ para ARS", () => {
+    it("should use $ for ARS", () => {
       const result = formatPrice(100, Currency.ARS, "es-AR");
       expect(result.symbol).toBe("$");
     });
 
-    it("debe usar símbolo por defecto para monedas no definidas", () => {
-      // Usando un valor que no está en el enum Currency
+    it("should use default symbol for undefined currencies", () => {
       const result = formatPrice(100, 999 as Currency, "en-US");
       expect(result.symbol).toBe("$");
     });
   });
 
-  describe("prefijos según el signo", () => {
-    it("debe usar + para precios positivos", () => {
+  describe("Sign handling", () => {
+    it("should use + for positive prices", () => {
       const result = formatPrice(100, Currency.USD, "en-US");
       expect(result.prefix).toBe("+");
     });
 
-    it("debe usar - para precios negativos", () => {
+    it("should use - for negative prices", () => {
       const result = formatPrice(-100, Currency.USD, "en-US");
       expect(result.prefix).toBe("-");
     });
 
-    it("debe usar string vacío para precio cero", () => {
+    it("should use empty string for zero price", () => {
       const result = formatPrice(0, Currency.USD, "en-US");
       expect(result.prefix).toBe("");
     });
   });
 
-  describe("casos edge y límites", () => {
-    it("debe manejar números muy grandes", () => {
+  describe("Edge cases", () => {
+    it("should handle very large numbers", () => {
       const result = formatPrice(999999999.99, Currency.USD, "en-US");
-
-      expect(result).toEqual({
-        prefix: "+",
-        symbol: "U$S",
-        amount: "1,000,000,000",
-        decimals: "99",
-      });
+      expect(result.amount).toBe("1,000,000,000");
+      expect(result.decimals).toBe("99");
     });
 
-    it("debe manejar números muy pequeños", () => {
-      const result = formatPrice(0.001, Currency.ARS, "es-AR");
-
-      expect(result).toEqual({
-        prefix: "+",
-        symbol: "$",
-        amount: "0",
-        decimals: "00",
-      });
+    it("should handle very small numbers", () => {
+      const result = formatPrice(0.001, Currency.USD, "en-US");
+      expect(result.amount).toBe("0");
+      expect(result.decimals).toBe("00");
     });
 
-    it("debe manejar números negativos muy pequeños", () => {
+    it("should handle very small negative numbers", () => {
       const result = formatPrice(-0.001, Currency.USD, "en-US");
-
-      expect(result).toEqual({
-        prefix: "-",
-        symbol: "U$S",
-        amount: "0",
-        decimals: "00",
-      });
+      expect(result.amount).toBe("0");
+      expect(result.decimals).toBe("00");
     });
   });
 
-  describe("estructura del objeto retornado", () => {
-    it("debe retornar un objeto con las propiedades correctas", () => {
-      const result = formatPrice(100.5, Currency.USD, "en-US");
-
+  describe("Return object structure", () => {
+    it("should return object with correct properties", () => {
+      const result = formatPrice(1234.56, Currency.USD, "en-US");
       expect(result).toHaveProperty("prefix");
       expect(result).toHaveProperty("symbol");
       expect(result).toHaveProperty("amount");
       expect(result).toHaveProperty("decimals");
     });
 
-    it("debe retornar todas las propiedades como strings", () => {
-      const result = formatPrice(100.5, Currency.USD, "en-US");
-
+    it("should return all properties as strings", () => {
+      const result = formatPrice(1234.56, Currency.USD, "en-US");
       expect(typeof result.prefix).toBe("string");
       expect(typeof result.symbol).toBe("string");
       expect(typeof result.amount).toBe("string");

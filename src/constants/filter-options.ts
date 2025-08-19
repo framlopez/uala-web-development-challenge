@@ -1,4 +1,4 @@
-// Opciones para filtros de métodos de cobro
+// Payment method filter options
 export const PAYMENT_METHOD_OPTIONS = [
   { value: "link", label: "Link de pago" },
   { value: "qr", label: "Código QR" },
@@ -6,14 +6,14 @@ export const PAYMENT_METHOD_OPTIONS = [
   { value: "pospro", label: "POS Pro" },
 ] as const;
 
-// Opciones para filtros de tarjeta
+// Card filter options
 export const CARD_OPTIONS = [
   { value: "visa", label: "Visa" },
   { value: "mastercard", label: "Mastercard" },
   { value: "amex", label: "Amex" },
 ] as const;
 
-// Opciones para filtros de cuotas
+// Installment filter options
 export const INSTALLMENT_OPTIONS = [
   { value: "1", label: "1" },
   { value: "2", label: "2" },
@@ -22,7 +22,7 @@ export const INSTALLMENT_OPTIONS = [
   { value: "12", label: "12" },
 ] as const;
 
-// Configuración para filtros de monto
+// Amount filter configuration
 export const AMOUNT_FILTER_CONFIG = {
   min: 0,
   max: 10000,
@@ -57,7 +57,7 @@ export const CATEGORIES = [
   "other",
 ] as const;
 
-// Días de la semana en español
+// Weekdays in Spanish
 export const WEEKDAYS_ES = [
   "Dom",
   "Lu",
@@ -68,7 +68,7 @@ export const WEEKDAYS_ES = [
   "Sáb",
 ] as const;
 
-// Tipos derivados de las opciones
+// Derived types from options
 export type PaymentMethodValue =
   (typeof PAYMENT_METHOD_OPTIONS)[number]["value"];
 export type CardValue = (typeof CARD_OPTIONS)[number]["value"];

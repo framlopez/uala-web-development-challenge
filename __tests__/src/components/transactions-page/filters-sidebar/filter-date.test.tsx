@@ -24,7 +24,7 @@ function TestWrapper({
 }) {
   const methods = useForm<Filters>({
     defaultValues: {
-      fecha: { desde: undefined, hasta: undefined },
+      date: { from: undefined, to: undefined },
       ...defaultValues,
     },
   });
@@ -37,8 +37,8 @@ describe("FilterDate", () => {
     jest.clearAllMocks();
   });
 
-  describe("Renderizado básico", () => {
-    it("debe renderizar el calendario", () => {
+  describe("Basic rendering", () => {
+    it("should render the calendar", () => {
       render(
         <TestWrapper>
           <FilterDate />
@@ -50,7 +50,7 @@ describe("FilterDate", () => {
       expect(calendar).toBeInTheDocument();
     });
 
-    it("debe renderizar el contenedor principal", () => {
+    it("should render the main container", () => {
       render(
         <TestWrapper>
           <FilterDate />
@@ -61,7 +61,7 @@ describe("FilterDate", () => {
       expect(container).toBeInTheDocument();
     });
 
-    it("no debe mostrar el botón de borrar inicialmente", () => {
+    it("should not show the clear button initially", () => {
       render(
         <TestWrapper>
           <FilterDate />
@@ -71,7 +71,7 @@ describe("FilterDate", () => {
       expect(screen.queryByText("Borrar")).not.toBeInTheDocument();
     });
 
-    it("debe centrar el calendario", () => {
+    it("should center the calendar", () => {
       render(
         <TestWrapper>
           <FilterDate />
@@ -85,8 +85,8 @@ describe("FilterDate", () => {
     });
   });
 
-  describe("Configuración del calendario", () => {
-    it("debe configurar el calendario en modo range", () => {
+  describe("Calendar configuration", () => {
+    it("should configure the calendar in range mode", () => {
       render(
         <TestWrapper>
           <FilterDate />
@@ -97,7 +97,7 @@ describe("FilterDate", () => {
       expect(calendar).toBeInTheDocument();
     });
 
-    it("debe aplicar las clases CSS correctas al calendario", () => {
+    it("should apply the correct CSS classes to the calendar", () => {
       render(
         <TestWrapper>
           <FilterDate />
@@ -109,7 +109,7 @@ describe("FilterDate", () => {
       expect(calendar).toBeInTheDocument();
     });
 
-    it("debe usar la localización en español", () => {
+    it("should use the Spanish locale", () => {
       render(
         <TestWrapper>
           <FilterDate />
@@ -120,7 +120,7 @@ describe("FilterDate", () => {
       expect(calendar).toBeInTheDocument();
     });
 
-    it("debe mostrar un solo mes", () => {
+    it("should show a single month", () => {
       render(
         <TestWrapper>
           <FilterDate />
@@ -132,15 +132,15 @@ describe("FilterDate", () => {
     });
   });
 
-  describe("Selección de fechas", () => {
-    it("debe mostrar el botón de borrar cuando hay fechas seleccionadas", () => {
+  describe("Date selection", () => {
+    it("should show the clear button when dates are selected", () => {
       const fromDate = new Date("2024-01-01").toISOString();
       const toDate = new Date("2024-01-31").toISOString();
 
       render(
         <TestWrapper
           defaultValues={{
-            fecha: { desde: fromDate, hasta: toDate },
+            date: { from: fromDate, to: toDate },
           }}
         >
           <FilterDate />
@@ -150,13 +150,13 @@ describe("FilterDate", () => {
       expect(screen.getByText("Borrar")).toBeInTheDocument();
     });
 
-    it("debe mostrar el botón de borrar con solo fecha desde", () => {
+    it("should show the clear button with only from date", () => {
       const fromDate = new Date("2024-01-01").toISOString();
 
       render(
         <TestWrapper
           defaultValues={{
-            fecha: { desde: fromDate, hasta: undefined },
+            date: { from: fromDate, to: undefined },
           }}
         >
           <FilterDate />
@@ -166,13 +166,13 @@ describe("FilterDate", () => {
       expect(screen.getByText("Borrar")).toBeInTheDocument();
     });
 
-    it("debe mostrar el botón de borrar con solo fecha hasta", () => {
+    it("should show the clear button with only to date", () => {
       const toDate = new Date("2024-01-31").toISOString();
 
       render(
         <TestWrapper
           defaultValues={{
-            fecha: { desde: undefined, hasta: toDate },
+            date: { from: undefined, to: toDate },
           }}
         >
           <FilterDate />
@@ -182,53 +182,53 @@ describe("FilterDate", () => {
       expect(screen.getByText("Borrar")).toBeInTheDocument();
     });
 
-    it("debe preparar fechas correctamente para el calendario", () => {
+    it("should prepare dates correctly for the calendar", () => {
       const fromDate = new Date("2024-01-01").toISOString();
       const toDate = new Date("2024-01-31").toISOString();
 
       render(
         <TestWrapper
           defaultValues={{
-            fecha: { desde: fromDate, hasta: toDate },
+            date: { from: fromDate, to: toDate },
           }}
         >
           <FilterDate />
         </TestWrapper>
       );
 
-      // El calendario debe recibir las fechas correctamente preparadas
+      // The calendar must receive the correct dates
       const calendar = document.querySelector('[role="grid"]');
       expect(calendar).toBeInTheDocument();
       expect(screen.getByText("Borrar")).toBeInTheDocument();
     });
 
-    it("debe manejar fechas parciales", () => {
+    it("should handle partial dates correctly", () => {
       const fromDate = new Date("2024-01-01").toISOString();
 
       render(
         <TestWrapper
           defaultValues={{
-            fecha: { desde: fromDate, hasta: undefined },
+            date: { from: fromDate, to: undefined },
           }}
         >
           <FilterDate />
         </TestWrapper>
       );
 
-      // Debe manejar correctamente cuando solo hay fecha desde
+      // Must handle correctly when only from date is present
       expect(screen.getByText("Borrar")).toBeInTheDocument();
     });
   });
 
-  describe("Botón de borrar", () => {
-    it("debe ejecutar clearDates cuando se hace clic en borrar", async () => {
+  describe("Clear button", () => {
+    it("should execute clearDates when clicking clear", async () => {
       const user = userEvent.setup();
       const fromDate = new Date("2024-01-01").toISOString();
 
       render(
         <TestWrapper
           defaultValues={{
-            fecha: { desde: fromDate, hasta: undefined },
+            date: { from: fromDate, to: undefined },
           }}
         >
           <FilterDate />
@@ -240,17 +240,17 @@ describe("FilterDate", () => {
 
       await user.click(clearButton);
 
-      // El botón debe desaparecer después del clic (porque las fechas se limpian)
+      // The button should disappear after clicking (because dates are cleared)
       expect(screen.queryByText("Borrar")).not.toBeInTheDocument();
     });
 
-    it("debe tener las clases CSS correctas", () => {
+    it("should have the correct CSS classes", () => {
       const fromDate = new Date("2024-01-01").toISOString();
 
       render(
         <TestWrapper
           defaultValues={{
-            fecha: { desde: fromDate, hasta: undefined },
+            date: { from: fromDate, to: undefined },
           }}
         >
           <FilterDate />
@@ -265,13 +265,13 @@ describe("FilterDate", () => {
       expect(clearButton).toHaveClass("rounded-full");
     });
 
-    it("debe ser un botón de tipo button", () => {
+    it("should be a button type", () => {
       const fromDate = new Date("2024-01-01").toISOString();
 
       render(
         <TestWrapper
           defaultValues={{
-            fecha: { desde: fromDate, hasta: undefined },
+            date: { from: fromDate, to: undefined },
           }}
         >
           <FilterDate />
@@ -282,13 +282,13 @@ describe("FilterDate", () => {
       expect(clearButton).toHaveAttribute("type", "button");
     });
 
-    it("debe tener efectos hover correctos", () => {
+    it("should have correct hover effects", () => {
       const fromDate = new Date("2024-01-01").toISOString();
 
       render(
         <TestWrapper
           defaultValues={{
-            fecha: { desde: fromDate, hasta: undefined },
+            date: { from: fromDate, to: undefined },
           }}
         >
           <FilterDate />
@@ -302,13 +302,13 @@ describe("FilterDate", () => {
       expect(clearButton).toHaveClass("duration-200");
     });
 
-    it("debe estar centrado correctamente", () => {
+    it("should be centered correctly", () => {
       const fromDate = new Date("2024-01-01").toISOString();
 
       render(
         <TestWrapper
           defaultValues={{
-            fecha: { desde: fromDate, hasta: undefined },
+            date: { from: fromDate, to: undefined },
           }}
         >
           <FilterDate />
@@ -322,8 +322,8 @@ describe("FilterDate", () => {
     });
   });
 
-  describe("Campos ocultos del formulario", () => {
-    it("debe tener campos ocultos para react-hook-form", () => {
+  describe("Hidden form fields", () => {
+    it("should have hidden fields for react-hook-form", () => {
       render(
         <TestWrapper>
           <FilterDate />
@@ -334,7 +334,7 @@ describe("FilterDate", () => {
       expect(hiddenInputs).toHaveLength(2);
     });
 
-    it("debe registrar los campos ocultos correctamente", () => {
+    it("should register hidden fields correctly", () => {
       render(
         <TestWrapper>
           <FilterDate />
@@ -342,52 +342,52 @@ describe("FilterDate", () => {
       );
 
       const hiddenInputs = document.querySelectorAll('input[type="hidden"]');
-      expect(hiddenInputs[0]).toHaveAttribute("name", "fecha.desde");
-      expect(hiddenInputs[1]).toHaveAttribute("name", "fecha.hasta");
+      expect(hiddenInputs[0]).toHaveAttribute("name", "date.from");
+      expect(hiddenInputs[1]).toHaveAttribute("name", "date.to");
     });
   });
 
-  describe("Lógica de handleSelect", () => {
-    it("debe manejar selección de rango undefined", () => {
+  describe("handleSelect logic", () => {
+    it("should handle undefined selection", () => {
       render(
         <TestWrapper>
           <FilterDate />
         </TestWrapper>
       );
 
-      // El componente debe manejar correctamente cuando handleSelect recibe undefined
+      // The component must handle correctly when handleSelect receives undefined
       const calendar = document.querySelector('[role="grid"]');
       expect(calendar).toBeInTheDocument();
 
-      // Simular que no hay selección
+      // Simulate no selection
       expect(screen.queryByText("Borrar")).not.toBeInTheDocument();
     });
 
-    it("debe convertir fechas ISO a Date correctamente", () => {
+    it("should convert ISO dates to Date correctly", () => {
       const isoDate = "2024-01-01T00:00:00.000Z";
 
       render(
         <TestWrapper
           defaultValues={{
-            fecha: { desde: isoDate, hasta: undefined },
+            date: { from: isoDate, to: undefined },
           }}
         >
           <FilterDate />
         </TestWrapper>
       );
 
-      // Debe convertir correctamente ISO string a Date
+      // Must convert correctly ISO string to Date
       expect(screen.getByText("Borrar")).toBeInTheDocument();
     });
 
-    it("debe manejar fechas con formato ISO completo", () => {
+    it("should handle full ISO dates", () => {
       const fromDate = new Date("2024-01-01T10:30:00.000Z").toISOString();
       const toDate = new Date("2024-01-31T15:45:00.000Z").toISOString();
 
       render(
         <TestWrapper
           defaultValues={{
-            fecha: { desde: fromDate, hasta: toDate },
+            date: { from: fromDate, to: toDate },
           }}
         >
           <FilterDate />
@@ -398,132 +398,132 @@ describe("FilterDate", () => {
     });
   });
 
-  describe("Formateo de fechas", () => {
-    it("debe formatear fechas válidas correctamente", () => {
+  describe("Date formatting", () => {
+    it("should format valid dates correctly", () => {
       const fromDate = new Date("2024-01-01").toISOString();
 
       render(
         <TestWrapper
           defaultValues={{
-            fecha: { desde: fromDate, hasta: undefined },
+            date: { from: fromDate, to: undefined },
           }}
         >
           <FilterDate />
         </TestWrapper>
       );
 
-      // El componente debe renderizarse sin errores con fecha válida
+      // The component should render without errors with a valid date
       expect(screen.getByText("Borrar")).toBeInTheDocument();
     });
 
-    it("debe manejar fechas undefined sin errores", () => {
+    it("should handle undefined dates gracefully", () => {
       render(
         <TestWrapper
           defaultValues={{
-            fecha: { desde: undefined, hasta: undefined },
+            date: { from: undefined, to: undefined },
           }}
         >
           <FilterDate />
         </TestWrapper>
       );
 
-      // No debe mostrar el botón de borrar
+      // Should not show the clear button
       expect(screen.queryByText("Borrar")).not.toBeInTheDocument();
     });
 
-    it("debe crear selectedItems correctamente", () => {
+    it("should create selectedItems correctly", () => {
       const fromDate = new Date("2024-01-01").toISOString();
       const toDate = new Date("2024-01-31").toISOString();
 
       render(
         <TestWrapper
           defaultValues={{
-            fecha: { desde: fromDate, hasta: toDate },
+            date: { from: fromDate, to: toDate },
           }}
         >
           <FilterDate />
         </TestWrapper>
       );
 
-      // Debe mostrar el botón de borrar cuando hay fechas seleccionadas
+      // Should show the clear button when dates are selected
       expect(screen.getByText("Borrar")).toBeInTheDocument();
     });
 
-    it("debe usar format de date-fns correctamente", () => {
+    it("should use date-fns format correctly", () => {
       const mockFormat = require("date-fns").format;
       const fromDate = new Date("2024-01-01").toISOString();
 
       render(
         <TestWrapper
           defaultValues={{
-            fecha: { desde: fromDate, hasta: undefined },
+            date: { from: fromDate, to: undefined },
           }}
         >
           <FilterDate />
         </TestWrapper>
       );
 
-      // Verificar que format fue llamado (se llama internamente para selectedItems)
+      // Verify that format was called (it's called internally for selectedItems)
       expect(mockFormat).toHaveBeenCalled();
     });
   });
 
-  describe("Integración con react-hook-form", () => {
-    it("debe usar el contexto del formulario correctamente", () => {
+  describe("React-hook-form integration", () => {
+    it("should use the form context correctly", () => {
       render(
         <TestWrapper>
           <FilterDate />
         </TestWrapper>
       );
 
-      // El componente debe renderizarse sin errores
+      // The component should render without errors
       const calendar = document.querySelector('[role="grid"]');
       expect(calendar).toBeInTheDocument();
     });
 
-    it("debe reflejar los valores del formulario en el calendario", () => {
+    it("should reflect form values in the calendar", () => {
       const fromDate = new Date("2024-01-01").toISOString();
       const toDate = new Date("2024-01-31").toISOString();
 
       render(
         <TestWrapper
           defaultValues={{
-            fecha: { desde: fromDate, hasta: toDate },
+            date: { from: fromDate, to: toDate },
           }}
         >
           <FilterDate />
         </TestWrapper>
       );
 
-      // Debe mostrar el botón de borrar indicando que hay fechas seleccionadas
+      // Should show the clear button indicating that dates are selected
       expect(screen.getByText("Borrar")).toBeInTheDocument();
     });
 
-    it("debe sincronizar con watch correctamente", () => {
+    it("should synchronize with watch correctly", () => {
       const fromDate = new Date("2024-01-01").toISOString();
 
       render(
         <TestWrapper
           defaultValues={{
-            fecha: { desde: fromDate, hasta: undefined },
+            date: { from: fromDate, to: undefined },
           }}
         >
           <FilterDate />
         </TestWrapper>
       );
 
-      // watch debe funcionar correctamente
+      // watch should work correctly
       expect(screen.getByText("Borrar")).toBeInTheDocument();
     });
 
-    it("debe llamar a setValue cuando se limpia", async () => {
+    it("should call setValue when cleared", async () => {
       const user = userEvent.setup();
       const fromDate = new Date("2024-01-01").toISOString();
 
       render(
         <TestWrapper
           defaultValues={{
-            fecha: { desde: fromDate, hasta: undefined },
+            date: { from: fromDate, to: undefined },
           }}
         >
           <FilterDate />
@@ -533,13 +533,13 @@ describe("FilterDate", () => {
       const clearButton = screen.getByText("Borrar");
       await user.click(clearButton);
 
-      // Después de limpiar, el botón debe desaparecer
+      // After clearing, the button should disappear
       expect(screen.queryByText("Borrar")).not.toBeInTheDocument();
     });
   });
 
-  describe("Estilos y clases CSS", () => {
-    it("debe aplicar las clases CSS correctas al contenedor", () => {
+  describe("Styles and CSS classes", () => {
+    it("should apply the correct classes to the container", () => {
       render(
         <TestWrapper>
           <FilterDate />
@@ -550,7 +550,7 @@ describe("FilterDate", () => {
       expect(container).toBeInTheDocument();
     });
 
-    it("debe centrar el calendario", () => {
+    it("should center the calendar", () => {
       render(
         <TestWrapper>
           <FilterDate />
@@ -563,7 +563,7 @@ describe("FilterDate", () => {
       expect(calendarContainer).toBeInTheDocument();
     });
 
-    it("debe aplicar estilos del calendario correctamente", () => {
+    it("should apply calendar styles correctly", () => {
       render(
         <TestWrapper>
           <FilterDate />
@@ -574,47 +574,47 @@ describe("FilterDate", () => {
       expect(calendar).toBeInTheDocument();
     });
 
-    it("debe aplicar border-0 al calendario", () => {
+    it("should apply border-0 to the calendar", () => {
       render(
         <TestWrapper>
           <FilterDate />
         </TestWrapper>
       );
 
-      // Buscar elementos que contengan las clases del calendario
+      // Search for elements containing calendar classes
       const calendarElement = document.querySelector('[class*="border-0"]');
       expect(calendarElement).toBeInTheDocument();
     });
   });
 
-  describe("Configuración de locale", () => {
-    it("debe usar locale español", () => {
+  describe("Locale configuration", () => {
+    it("should use Spanish locale", () => {
       render(
         <TestWrapper>
           <FilterDate />
         </TestWrapper>
       );
 
-      // El calendario debe estar configurado con locale español
+      // The calendar must be configured with Spanish locale
       const calendar = document.querySelector('[role="grid"]');
       expect(calendar).toBeInTheDocument();
     });
 
-    it("debe configurar numberOfMonths como 1", () => {
+    it("should configure numberOfMonths as 1", () => {
       render(
         <TestWrapper>
           <FilterDate />
         </TestWrapper>
       );
 
-      // Debe mostrar solo un mes
+      // Should show only one month
       const calendar = document.querySelector('[role="grid"]');
       expect(calendar).toBeInTheDocument();
     });
   });
 
-  describe("Casos edge", () => {
-    it("debe manejar valores undefined sin errores", () => {
+  describe("Edge cases", () => {
+    it("should handle undefined values gracefully", () => {
       expect(() => {
         render(
           <TestWrapper>
@@ -624,7 +624,7 @@ describe("FilterDate", () => {
       }).not.toThrow();
     });
 
-    it("debe funcionar sin valores iniciales", () => {
+    it("should work without initial values", () => {
       render(
         <TestWrapper>
           <FilterDate />
@@ -635,13 +635,13 @@ describe("FilterDate", () => {
       expect(calendar).toBeInTheDocument();
     });
 
-    it("debe manejar fechas inválidas graciosamente", () => {
-      // Esto no debería suceder en uso normal, pero es bueno probarlo
+    it("should gracefully handle invalid dates", () => {
+      // This should not happen in normal usage, but it's good to test
       expect(() => {
         render(
           <TestWrapper
             defaultValues={{
-              fecha: { desde: "fecha-invalida", hasta: undefined },
+              date: { from: "invalid-date", to: undefined },
             }}
           >
             <FilterDate />
@@ -650,29 +650,29 @@ describe("FilterDate", () => {
       }).not.toThrow();
     });
 
-    it("debe manejar conversión de fechas ISO a Date", () => {
+    it("should handle ISO date conversion", () => {
       const isoDate = "2024-01-01T00:00:00.000Z";
 
       render(
         <TestWrapper
           defaultValues={{
-            fecha: { desde: isoDate, hasta: undefined },
+            date: { from: isoDate, to: undefined },
           }}
         >
           <FilterDate />
         </TestWrapper>
       );
 
-      // Debe convertir correctamente ISO string a Date
+      // Must convert correctly ISO string to Date
       expect(screen.getByText("Borrar")).toBeInTheDocument();
     });
 
-    it("debe manejar fechas null sin errores", () => {
+    it("should handle null dates gracefully", () => {
       expect(() => {
         render(
           <TestWrapper
             defaultValues={{
-              fecha: { desde: null as any, hasta: null as any },
+              date: { from: null as any, to: null as any },
             }}
           >
             <FilterDate />
@@ -682,8 +682,8 @@ describe("FilterDate", () => {
     });
   });
 
-  describe("Accesibilidad", () => {
-    it("debe tener calendario accesible", () => {
+  describe("Accessibility", () => {
+    it("should have an accessible calendar", () => {
       render(
         <TestWrapper>
           <FilterDate />
@@ -694,13 +694,13 @@ describe("FilterDate", () => {
       expect(calendar).toBeInTheDocument();
     });
 
-    it("debe tener botón de borrar accesible", () => {
+    it("should have an accessible clear button", () => {
       const fromDate = new Date("2024-01-01").toISOString();
 
       render(
         <TestWrapper
           defaultValues={{
-            fecha: { desde: fromDate, hasta: undefined },
+            date: { from: fromDate, to: undefined },
           }}
         >
           <FilterDate />
@@ -712,13 +712,13 @@ describe("FilterDate", () => {
       expect(clearButton).toBeVisible();
     });
 
-    it("debe permitir navegación por teclado", () => {
+    it("should allow keyboard navigation", () => {
       const fromDate = new Date("2024-01-01").toISOString();
 
       render(
         <TestWrapper
           defaultValues={{
-            fecha: { desde: fromDate, hasta: undefined },
+            date: { from: fromDate, to: undefined },
           }}
         >
           <FilterDate />
@@ -730,7 +730,7 @@ describe("FilterDate", () => {
       expect(clearButton).toHaveFocus();
     });
 
-    it("debe tener campos ocultos con names apropiados", () => {
+    it("should have hidden fields with appropriate names", () => {
       render(
         <TestWrapper>
           <FilterDate />
@@ -738,12 +738,12 @@ describe("FilterDate", () => {
       );
 
       const hiddenInputs = document.querySelectorAll('input[type="hidden"]');
-      expect(hiddenInputs[0]).toHaveAttribute("name", "fecha.desde");
-      expect(hiddenInputs[1]).toHaveAttribute("name", "fecha.hasta");
+      expect(hiddenInputs[0]).toHaveAttribute("name", "date.from");
+      expect(hiddenInputs[1]).toHaveAttribute("name", "date.to");
     });
   });
 
-  it("debe ser un componente React válido", () => {
+  it("should be a valid React component", () => {
     expect(typeof FilterDate).toBe("function");
   });
 });

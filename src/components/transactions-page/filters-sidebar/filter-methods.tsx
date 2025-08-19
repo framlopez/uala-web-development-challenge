@@ -7,9 +7,9 @@ import FilterButton from "./filter-button";
 
 export default function FilterMethods() {
   const { watch, setValue } = useFormContext<Filters>();
-  const selectedMethods = watch("metodosCobro");
+  const selectedMethods = watch("paymentMethods");
 
-  // Asegurar que selectedMethods siempre sea un array
+  // Ensure selectedMethods is always an array
   const safeSelectedMethods = Array.isArray(selectedMethods)
     ? selectedMethods
     : [];
@@ -26,7 +26,7 @@ export default function FilterMethods() {
       currentMethods.push(method);
     }
 
-    setValue("metodosCobro", currentMethods);
+    setValue("paymentMethods", currentMethods);
   };
 
   return (

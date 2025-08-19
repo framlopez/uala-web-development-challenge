@@ -1,37 +1,37 @@
 import { z } from "zod";
 
 export const filtersSchema = z.object({
-  metodosCobro: z.array(z.enum(["link", "qr", "mpos", "pospro"])),
-  tarjeta: z.array(z.enum(["visa", "mastercard", "amex"])),
-  cuotas: z.array(z.enum(["1", "2", "3", "6", "12"])),
-  fecha: z.object({
-    desde: z.string().optional(),
-    hasta: z.string().optional(),
+  paymentMethods: z.array(z.enum(["link", "qr", "mpos", "pospro"])),
+  card: z.array(z.enum(["visa", "mastercard", "amex"])),
+  installments: z.array(z.enum(["1", "2", "3", "6", "12"])),
+  date: z.object({
+    from: z.string().optional(),
+    to: z.string().optional(),
   }),
-  monto: z.object({
+  amount: z.object({
     min: z.number().min(0).optional(),
     max: z.number().min(0).optional(),
   }),
 });
 
 export interface Filters {
-  metodosCobro: ("link" | "qr" | "mpos" | "pospro")[];
-  tarjeta: ("visa" | "mastercard" | "amex")[];
-  cuotas: ("1" | "2" | "3" | "6" | "12")[];
-  fecha: {
-    desde?: string;
-    hasta?: string;
+  paymentMethods: ("link" | "qr" | "mpos" | "pospro")[];
+  card: ("visa" | "mastercard" | "amex")[];
+  installments: ("1" | "2" | "3" | "6" | "12")[];
+  date: {
+    from?: string;
+    to?: string;
   };
-  monto: {
+  amount: {
     min?: number;
     max?: number;
   };
 }
 
 export const defaultFilters: Filters = {
-  metodosCobro: [],
-  tarjeta: [],
-  cuotas: [],
-  fecha: {},
-  monto: { min: undefined, max: undefined },
+  paymentMethods: [],
+  card: [],
+  installments: [],
+  date: {},
+  amount: { min: undefined, max: undefined },
 };

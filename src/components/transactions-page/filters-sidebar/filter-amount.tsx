@@ -7,12 +7,12 @@ import { useFormContext } from "react-hook-form";
 
 export default function FilterAmount() {
   const { register, setValue, watch } = useFormContext<Filters>();
-  const amount = watch("monto");
+  const amount = watch("amount") || { min: undefined, max: undefined };
 
   const [isDragging, setIsDragging] = useState<"min" | "max" | null>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
 
-  // Función helper para validar si un valor es un número válido
+  // Helper function to validate if a value is a valid number
   const isValidNumber = (value: unknown): value is number => {
     return typeof value === "number" && !isNaN(value) && isFinite(value);
   };
@@ -49,7 +49,7 @@ export default function FilterAmount() {
       Math.max(value, AMOUNT_FILTER_CONFIG.min),
       maxValue
     );
-    setValue("monto", { ...amount, min: clamped });
+    setValue("amount", { ...amount, min: clamped });
   };
 
   const handleMaxChange = (value: number) => {
@@ -57,11 +57,11 @@ export default function FilterAmount() {
       Math.min(value, AMOUNT_FILTER_CONFIG.max),
       minValue
     );
-    setValue("monto", { ...amount, max: clamped });
+    setValue("amount", { ...amount, max: clamped });
   };
 
-  const resetMin = () => setValue("monto", { ...amount, min: undefined });
-  const resetMax = () => setValue("monto", { ...amount, max: undefined });
+  const resetMin = () => setValue("amount", { ...amount, min: undefined });
+  const resetMax = () => setValue("amount", { ...amount, max: undefined });
 
   const handleMouseDown = (handle: "min" | "max") => {
     setIsDragging(handle);
@@ -91,7 +91,7 @@ export default function FilterAmount() {
 
   return (
     <div className="space-y-2 mb-6">
-      {/* Slider de rango doble */}
+      {/* Double range slider */}
       <div
         ref={sliderRef}
         className="relative w-full pt-8 pb-2"
@@ -132,7 +132,7 @@ export default function FilterAmount() {
         </div>
       </div>
 
-      {/* Inputs de monto mínimo y máximo */}
+      {/* Min and max amount inputs */}
       <div className="grid grid-cols-3 gap-6">
         <div className="rounded-2xl px-4 py-1 outline-1 outline-uala-primary">
           <label className="block text-[10px] text-[#606882]">
@@ -187,14 +187,14 @@ export default function FilterAmount() {
         </div>
       </div>
 
-      {/* Campos ocultos para RHF */}
+      {/* Hidden fields for RHF */}
       <input
         type="hidden"
-        {...register("monto.min", { valueAsNumber: true })}
+        {...register("amount.min", { valueAsNumber: true })}
       />
       <input
         type="hidden"
-        {...register("monto.max", { valueAsNumber: true })}
+        {...register("amount.max", { valueAsNumber: true })}
       />
     </div>
   );

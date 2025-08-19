@@ -11,8 +11,8 @@ export async function downloadTransactions(dateRange: {
     }
 
     // Validar que las fechas no sean futuras
-    const ahora = new Date();
-    if (from > ahora || to > ahora) {
+    const now = new Date();
+    if (from > now || to > now) {
       throw new Error("No se puede descargar transacciones de fechas futuras");
     }
 
@@ -24,11 +24,11 @@ export async function downloadTransactions(dateRange: {
     }
 
     // Formatear fechas como YYYY-MM-DD
-    const fechaInicioFormateada = from.toISOString().split("T")[0];
-    const fechaFinFormateada = to.toISOString().split("T")[0];
+    const formattedStartDate = from.toISOString().split("T")[0];
+    const formattedEndDate = to.toISOString().split("T")[0];
 
     // Construir URL del endpoint
-    const url = `/api/me/transactions/download?fechaDesde=${fechaInicioFormateada}&fechaHasta=${fechaFinFormateada}`;
+    const url = `/api/me/transactions/download?dateFrom=${formattedStartDate}&dateTo=${formattedEndDate}`;
 
     // Realizar la descarga con timeout
     const controller = new AbortController();
@@ -80,7 +80,7 @@ export async function downloadTransactions(dateRange: {
     // Crear elemento de descarga
     const link = document.createElement("a");
     link.href = blobUrl;
-    link.download = `transacciones_${fechaInicioFormateada}_a_${fechaFinFormateada}.csv`;
+    link.download = `transactions_${formattedStartDate}_to_${formattedEndDate}.csv`;
 
     // Simular clic para iniciar descarga
     document.body.appendChild(link);

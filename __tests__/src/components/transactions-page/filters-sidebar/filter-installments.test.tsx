@@ -14,7 +14,7 @@ function TestWrapper({
 }) {
   const methods = useForm<Filters>({
     defaultValues: {
-      cuotas: [],
+      installments: [],
       ...defaultValues,
     },
   });
@@ -27,179 +27,47 @@ describe("FilterInstallments", () => {
     jest.clearAllMocks();
   });
 
-  describe("Renderizado básico", () => {
-    it("debe renderizar el componente correctamente", () => {
+  describe("Basic rendering", () => {
+    it("should render the installments filter component", () => {
       render(
         <TestWrapper>
           <FilterInstallments />
         </TestWrapper>
       );
 
-      // El componente debe renderizarse sin errores
-      expect(screen.getByText("1")).toBeInTheDocument();
-    });
-
-    it("debe tener la estructura de grid correcta", () => {
-      render(
-        <TestWrapper>
-          <FilterInstallments />
-        </TestWrapper>
-      );
-
-      const container = document.querySelector('[class*="flex gap-3 mb-6"]');
-      expect(container).toBeInTheDocument();
-    });
-  });
-
-  describe("Estado inicial", () => {
-    it("debe tener todas las cuotas no seleccionadas por defecto", () => {
-      render(
-        <TestWrapper>
-          <FilterInstallments />
-        </TestWrapper>
-      );
-
-      const checkboxes = screen.getAllByRole("checkbox");
-      checkboxes.forEach((checkbox) => {
-        expect(checkbox).not.toBeChecked();
-      });
-    });
-
-    it("debe renderizar botones sin el estilo de seleccionado", () => {
-      render(
-        <TestWrapper>
-          <FilterInstallments />
-        </TestWrapper>
-      );
-
-      const buttons = screen.getAllByRole("button");
-      buttons.forEach((button) => {
-        expect(button).not.toHaveClass("bg-[#E0EDFF]");
-      });
-    });
-  });
-
-  describe("Interacciones del usuario", () => {
-    it("debe seleccionar una cuota cuando se hace clic", async () => {
-      const user = userEvent.setup();
-      render(
-        <TestWrapper>
-          <FilterInstallments />
-        </TestWrapper>
-      );
-
-      const oneInstallmentButton = screen.getByText("1");
-      await user.click(oneInstallmentButton);
-
-      // Verificar que el checkbox esté seleccionado
-      const oneInstallmentCheckbox = screen.getByRole("checkbox", {
-        name: "1",
-      });
-      expect(oneInstallmentCheckbox).toBeChecked();
-    });
-
-    it("debe deseleccionar una cuota cuando se hace clic nuevamente", async () => {
-      const user = userEvent.setup();
-      render(
-        <TestWrapper>
-          <FilterInstallments />
-        </TestWrapper>
-      );
-
-      const oneInstallmentButton = screen.getByText("1");
-
-      // Seleccionar
-      await user.click(oneInstallmentButton);
-      let oneInstallmentCheckbox = screen.getByRole("checkbox", { name: "1" });
-      expect(oneInstallmentCheckbox).toBeChecked();
-
-      // Deseleccionar
-      await user.click(oneInstallmentButton);
-      oneInstallmentCheckbox = screen.getByRole("checkbox", { name: "1" });
-      expect(oneInstallmentCheckbox).not.toBeChecked();
-    });
-  });
-
-  describe("Accesibilidad", () => {
-    it("debe tener checkboxes accesibles", () => {
-      render(
-        <TestWrapper>
-          <FilterInstallments />
-        </TestWrapper>
-      );
-
-      const checkboxes = screen.getAllByRole("checkbox");
-      expect(checkboxes.length).toBeGreaterThan(0);
-
-      checkboxes.forEach((checkbox) => {
-        expect(checkbox).toBeInTheDocument();
-        expect(checkbox).toHaveAttribute("id");
-      });
-    });
-
-    it("debe tener botones accesibles", () => {
-      render(
-        <TestWrapper>
-          <FilterInstallments />
-        </TestWrapper>
-      );
-
-      const buttons = screen.getAllByRole("button");
-      expect(buttons.length).toBeGreaterThan(0);
-
-      buttons.forEach((button) => {
-        expect(button).toBeInTheDocument();
-        expect(button).toBeVisible();
-      });
-    });
-  });
-
-  describe("Estilos y clases CSS", () => {
-    it("debe aplicar las clases CSS correctas al contenedor", () => {
-      render(
-        <TestWrapper>
-          <FilterInstallments />
-        </TestWrapper>
-      );
-
+      // Should render the container
       const container = document.querySelector('[class*="flex gap-3 mb-6"]');
       expect(container).toBeInTheDocument();
     });
 
-    it("debe aplicar estilos condicionales basados en la selección", async () => {
-      const user = userEvent.setup();
+    it("should render all installment options", () => {
       render(
         <TestWrapper>
           <FilterInstallments />
         </TestWrapper>
       );
 
-      const oneInstallmentButton = screen.getByText("1");
+      expect(screen.getByText("1")).toBeInTheDocument();
+      expect(screen.getByText("2")).toBeInTheDocument();
+      expect(screen.getByText("3")).toBeInTheDocument();
+      expect(screen.getByText("6")).toBeInTheDocument();
+      expect(screen.getByText("12")).toBeInTheDocument();
+    });
 
-      // Inicialmente no seleccionado
-      expect(oneInstallmentButton.closest("label")).not.toHaveClass(
-        "bg-[#E0EDFF]"
+    it("should render filter buttons for each installment option", () => {
+      render(
+        <TestWrapper>
+          <FilterInstallments />
+        </TestWrapper>
       );
 
-      // Seleccionar
-      await user.click(oneInstallmentButton);
-      expect(oneInstallmentButton.closest("label")).toHaveClass("bg-[#E0EDFF]");
+      const filterButtons = document.querySelectorAll('[role="button"]');
+      expect(filterButtons).toHaveLength(5);
     });
   });
 
-  describe("Integración con react-hook-form", () => {
-    it("debe usar el contexto del formulario correctamente", () => {
-      render(
-        <TestWrapper>
-          <FilterInstallments />
-        </TestWrapper>
-      );
-
-      // El componente debe renderizarse sin errores
-      expect(screen.getByText("1")).toBeInTheDocument();
-    });
-
-    it("debe sincronizar el estado con el formulario", async () => {
+  describe("Button functionality", () => {
+    it("should select/deselect installment options when clicked", async () => {
       const user = userEvent.setup();
       render(
         <TestWrapper>
@@ -207,37 +75,152 @@ describe("FilterInstallments", () => {
         </TestWrapper>
       );
 
-      const oneInstallmentButton = screen.getByText("1");
-      await user.click(oneInstallmentButton);
+      const oneButton = screen.getByText("1");
+      const twoButton = screen.getByText("2");
 
-      // El estado debe estar sincronizado
-      const oneInstallmentCheckbox = screen.getByRole("checkbox", {
-        name: "1",
+      await user.click(oneButton);
+      // Should show selected state
+      expect(oneButton.closest("label")).toHaveClass("bg-[#E0EDFF]");
+
+      await user.click(twoButton);
+      expect(twoButton.closest("label")).toHaveClass("bg-[#E0EDFF]");
+
+      await user.click(oneButton);
+      // Should deselect
+      expect(oneButton.closest("label")).not.toHaveClass("bg-[#E0EDFF]");
+    });
+
+    it("should allow multiple installment options to be selected", async () => {
+      const user = userEvent.setup();
+      render(
+        <TestWrapper>
+          <FilterInstallments />
+        </TestWrapper>
+      );
+
+      const oneButton = screen.getByText("1");
+      const threeButton = screen.getByText("3");
+      const sixButton = screen.getByText("6");
+
+      await user.click(oneButton);
+      await user.click(threeButton);
+      await user.click(sixButton);
+
+      expect(oneButton.closest("label")).toHaveClass("bg-[#E0EDFF]");
+      expect(threeButton.closest("label")).toHaveClass("bg-[#E0EDFF]");
+      expect(sixButton.closest("label")).toHaveClass("bg-[#E0EDFF]");
+    });
+  });
+
+  describe("Form integration", () => {
+    it("should register with react-hook-form", () => {
+      render(
+        <TestWrapper>
+          <FilterInstallments />
+        </TestWrapper>
+      );
+
+      const hiddenInputs = document.querySelectorAll('input[type="checkbox"]');
+      expect(hiddenInputs[0]).toHaveAttribute("id", "installment-1");
+      expect(hiddenInputs[1]).toHaveAttribute("id", "installment-2");
+      expect(hiddenInputs[2]).toHaveAttribute("id", "installment-3");
+      expect(hiddenInputs[3]).toHaveAttribute("id", "installment-6");
+      expect(hiddenInputs[4]).toHaveAttribute("id", "installment-12");
+    });
+
+    it("should show initial values from form", () => {
+      const defaultValues = {
+        installments: ["1", "3"] as ("1" | "2" | "3" | "6" | "12")[],
+      };
+
+      render(
+        <TestWrapper defaultValues={defaultValues}>
+          <FilterInstallments />
+        </TestWrapper>
+      );
+
+      const oneButton = screen.getByText("1");
+      const twoButton = screen.getByText("2");
+      const threeButton = screen.getByText("3");
+      const sixButton = screen.getByText("6");
+      const twelveButton = screen.getByText("12");
+
+      expect(oneButton.closest("label")).toHaveClass("bg-[#E0EDFF]");
+      expect(twoButton.closest("label")).not.toHaveClass("bg-[#E0EDFF]");
+      expect(threeButton.closest("label")).toHaveClass("bg-[#E0EDFF]");
+      expect(sixButton.closest("label")).not.toHaveClass("bg-[#E0EDFF]");
+      expect(twelveButton.closest("label")).not.toHaveClass("bg-[#E0EDFF]");
+    });
+  });
+
+  describe("Accessibility", () => {
+    it("should have proper labels for screen readers", () => {
+      render(
+        <TestWrapper>
+          <FilterInstallments />
+        </TestWrapper>
+      );
+
+      expect(screen.getByText("1")).toBeInTheDocument();
+      expect(screen.getByText("2")).toBeInTheDocument();
+      expect(screen.getByText("3")).toBeInTheDocument();
+      expect(screen.getByText("6")).toBeInTheDocument();
+      expect(screen.getByText("12")).toBeInTheDocument();
+    });
+
+    it("should have proper button attributes", () => {
+      render(
+        <TestWrapper>
+          <FilterInstallments />
+        </TestWrapper>
+      );
+
+      const filterButtons = document.querySelectorAll('[role="button"]');
+      filterButtons.forEach((button) => {
+        expect(button).toHaveAttribute("role", "button");
       });
-      expect(oneInstallmentCheckbox).toBeChecked();
     });
   });
 
-  describe("Casos edge", () => {
-    it("debe manejar array vacío de cuotas seleccionadas", () => {
+  describe("Edge cases", () => {
+    it("should handle empty initial values", () => {
       render(
         <TestWrapper>
           <FilterInstallments />
         </TestWrapper>
       );
 
-      // Debe renderizar correctamente con array vacío
-      expect(screen.getByText("1")).toBeInTheDocument();
+      const filterButtons = document.querySelectorAll('[role="button"]');
+      filterButtons.forEach((button) => {
+        expect(button.closest("label")).not.toHaveClass("bg-[#E0EDFF]");
+      });
     });
 
-    it("debe funcionar con valores undefined", () => {
-      expect(() => {
-        render(
-          <TestWrapper>
-            <FilterInstallments />
-          </TestWrapper>
-        );
-      }).not.toThrow();
+    it("should handle all installment options selected", () => {
+      const defaultValues = {
+        installments: ["1", "2", "3", "6", "12"] as (
+          | "1"
+          | "2"
+          | "3"
+          | "6"
+          | "12"
+        )[],
+      };
+
+      render(
+        <TestWrapper defaultValues={defaultValues}>
+          <FilterInstallments />
+        </TestWrapper>
+      );
+
+      const filterButtons = document.querySelectorAll('[role="button"]');
+      filterButtons.forEach((button) => {
+        expect(button.closest("label")).toHaveClass("bg-[#E0EDFF]");
+      });
     });
+  });
+
+  it("should be a valid React component", () => {
+    expect(typeof FilterInstallments).toBe("function");
   });
 });

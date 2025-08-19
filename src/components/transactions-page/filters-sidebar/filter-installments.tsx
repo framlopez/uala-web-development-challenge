@@ -7,9 +7,9 @@ import FilterButton from "./filter-button";
 
 export default function FilterInstallments() {
   const { watch, setValue } = useFormContext<Filters>();
-  const selectedInstallments = watch("cuotas");
+  const selectedInstallments = watch("installments");
 
-  // Asegurar que selectedInstallments siempre sea un array
+  // Ensure selectedInstallments is always an array
   const safeSelectedInstallments = Array.isArray(selectedInstallments)
     ? selectedInstallments
     : [];
@@ -26,7 +26,7 @@ export default function FilterInstallments() {
       currentInstallments.push(installment);
     }
 
-    setValue("cuotas", currentInstallments);
+    setValue("installments", currentInstallments);
   };
 
   return (

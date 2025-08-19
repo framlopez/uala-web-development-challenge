@@ -9,22 +9,22 @@ jest.mock("@/hooks/use-filters", () => ({
   useFilters: jest.fn(() => ({
     form: {
       getValues: jest.fn(() => ({
-        metodosCobro: [],
-        tarjeta: [],
-        cuotas: [],
-        fecha: { desde: undefined, hasta: undefined },
-        monto: { min: undefined, max: undefined },
+        paymentMethods: [],
+        card: [],
+        installments: [],
+        date: { from: undefined, to: undefined },
+        amount: { min: undefined, max: undefined },
       })),
       reset: jest.fn(),
       setValue: jest.fn(),
       clearErrors: jest.fn(),
       trigger: jest.fn(),
       watch: jest.fn(() => ({
-        metodosCobro: [],
-        tarjeta: [],
-        cuotas: [],
-        fecha: { desde: undefined, hasta: undefined },
-        monto: { min: undefined, max: undefined },
+        paymentMethods: [],
+        card: [],
+        installments: [],
+        date: { from: undefined, to: undefined },
+        amount: { min: undefined, max: undefined },
       })),
       register: jest.fn(() => ({
         onChange: jest.fn(),
@@ -37,11 +37,11 @@ jest.mock("@/hooks/use-filters", () => ({
     clearAllFilters: jest.fn(),
     hasActiveFilters: jest.fn(() => false),
     currentFilters: {
-      metodosCobro: [],
-      tarjeta: [],
-      cuotas: [],
-      fecha: { desde: undefined, hasta: undefined },
-      monto: { min: undefined, max: undefined },
+      paymentMethods: [],
+      card: [],
+      installments: [],
+      date: { from: undefined, to: undefined },
+      amount: { min: undefined, max: undefined },
     },
   })),
 }));
@@ -81,11 +81,11 @@ function TestWrapper({
 }) {
   const methods = useForm<Filters>({
     defaultValues: {
-      fecha: { desde: undefined, hasta: undefined },
-      monto: { min: undefined, max: undefined },
-      tarjeta: [],
-      cuotas: [],
-      metodosCobro: [],
+      date: { from: undefined, to: undefined },
+      amount: { min: undefined, max: undefined },
+      card: [],
+      installments: [],
+      paymentMethods: [],
       ...defaultValues,
     },
   });
@@ -240,7 +240,7 @@ describe("FiltersSidebar", () => {
 
     it("debe manejar valores predeterminados del formulario", () => {
       render(
-        <TestWrapper defaultValues={{ tarjeta: ["visa"] }}>
+        <TestWrapper defaultValues={{ card: ["visa"] }}>
           <FiltersSidebar isOpen={true} onClose={mockOnClose} />
         </TestWrapper>
       );
@@ -428,7 +428,9 @@ describe("FiltersSidebar", () => {
         </TestWrapper>
       );
 
-      const overlay = document.querySelector('[class*="fixed inset-0 bg-white/80"]');
+      const overlay = document.querySelector(
+        '[class*="fixed inset-0 bg-white/80"]'
+      );
       expect(overlay).toBeInTheDocument();
 
       if (overlay) {
