@@ -1,8 +1,5 @@
-import {
-  defaultFilters,
-  filtersSchema,
-  type Filters,
-} from "@/src/types/filters";
+import type { Filters } from "@/src/types/filters";
+import { defaultFilters, filtersSchema } from "@/src/types/filters";
 import { hasAnyActiveFilter } from "@/src/utils/filter-utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -82,7 +79,7 @@ export function useFilters() {
 
   // Función para cargar filtros desde la URL
   const loadFiltersFromURL = useCallback(() => {
-    const filters: Filters = { ...defaultFilters };
+    const filters = { ...defaultFilters };
 
     // Métodos de cobro
     const metodosCobro = searchParams.getAll("metodosCobro");
@@ -117,13 +114,23 @@ export function useFilters() {
       filters.cuotas = [cuotas as "1" | "2" | "3" | "6" | "12"];
     }
 
-    // Montos
+    // Montos - Validar que sean números válidos
     const montoMin = searchParams.get("montoMin");
     const montoMax = searchParams.get("montoMax");
     if (montoMin || montoMax) {
+      const minValue = montoMin ? parseFloat(montoMin) : undefined;
+      const maxValue = montoMax ? parseFloat(montoMax) : undefined;
+
+      // Solo incluir valores si son números válidos, sino usar undefined
       filters.monto = {
-        min: montoMin ? parseFloat(montoMin) : undefined,
-        max: montoMax ? parseFloat(montoMax) : undefined,
+        min:
+          minValue && !isNaN(minValue) && isFinite(minValue)
+            ? minValue
+            : undefined,
+        max:
+          maxValue && !isNaN(maxValue) && isFinite(maxValue)
+            ? maxValue
+            : undefined,
       };
     }
 

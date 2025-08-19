@@ -12,27 +12,36 @@ export default function FilterAmount() {
   const [isDragging, setIsDragging] = useState<"min" | "max" | null>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
 
-  const minValue = amount.min ?? AMOUNT_FILTER_CONFIG.min;
-  const maxValue = amount.max ?? AMOUNT_FILTER_CONFIG.max;
+  // Función helper para validar si un valor es un número válido
+  const isValidNumber = (value: unknown): value is number => {
+    return typeof value === "number" && !isNaN(value) && isFinite(value);
+  };
+
+  const minValue = isValidNumber(amount.min)
+    ? amount.min
+    : AMOUNT_FILTER_CONFIG.min;
+  const maxValue = isValidNumber(amount.max)
+    ? amount.max
+    : AMOUNT_FILTER_CONFIG.max;
 
   const leftPercent = useMemo(
     () =>
-      minValue !== undefined
-        ? ((minValue - AMOUNT_FILTER_CONFIG.min) /
+      isValidNumber(amount.min)
+        ? ((amount.min - AMOUNT_FILTER_CONFIG.min) /
             (AMOUNT_FILTER_CONFIG.max - AMOUNT_FILTER_CONFIG.min)) *
           100
         : 0,
-    [minValue]
+    [amount.min]
   );
   const rightPercent = useMemo(
     () =>
-      maxValue !== undefined
+      isValidNumber(amount.max)
         ? 100 -
-          ((maxValue - AMOUNT_FILTER_CONFIG.min) /
+          ((amount.max - AMOUNT_FILTER_CONFIG.min) /
             (AMOUNT_FILTER_CONFIG.max - AMOUNT_FILTER_CONFIG.min)) *
             100
         : 0,
-    [maxValue]
+    [amount.max]
   );
 
   const handleMinChange = (value: number) => {
@@ -96,7 +105,7 @@ export default function FilterAmount() {
           style={{
             clipPath: `inset(0 ${rightPercent}% 0 ${leftPercent}%)`,
             display:
-              minValue !== undefined || maxValue !== undefined
+              isValidNumber(amount.min) || isValidNumber(amount.max)
                 ? "block"
                 : "none",
           }}
@@ -113,13 +122,13 @@ export default function FilterAmount() {
         <div
           className="absolute top-6 size-5 bg-uala-primary border-2 border-uala-primary rounded-full cursor-pointer transform -translate-x-2"
           style={{
-            left: `${maxValue !== undefined ? 100 - rightPercent : 100}%`,
+            left: `${isValidNumber(amount.max) ? 100 - rightPercent : 100}%`,
           }}
           onMouseDown={() => handleMouseDown("max")}
         />
 
         <div className="absolute top-0 left-1/2 -translate-x-1/2 text-uala-primary font-semibold">
-          ${maxValue ?? AMOUNT_FILTER_CONFIG.max}
+          ${maxValue}
         </div>
       </div>
 
@@ -135,7 +144,7 @@ export default function FilterAmount() {
               type="text"
               inputMode="numeric"
               pattern="[0-9]*"
-              value={amount.min !== undefined ? amount.min.toString() : ""}
+              value={isValidNumber(amount.min) ? amount.min.toString() : ""}
               onChange={(e) => {
                 const val = e.target.value;
                 if (val === "") return resetMin();
@@ -162,7 +171,7 @@ export default function FilterAmount() {
               type="text"
               inputMode="numeric"
               pattern="[0-9]*"
-              value={amount.max !== undefined ? amount.max.toString() : ""}
+              value={isValidNumber(amount.max) ? amount.max.toString() : ""}
               onChange={(e) => {
                 const val = e.target.value;
                 if (val === "") return resetMax();

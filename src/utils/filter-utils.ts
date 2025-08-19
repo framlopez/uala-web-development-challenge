@@ -18,7 +18,13 @@ function isFilterActive(filters: Filters, filterKey: keyof Filters): boolean {
       return filters.cuotas.length > 0;
 
     case "monto":
-      return filters.monto.min !== undefined || filters.monto.max !== undefined;
+      // Función helper para validar si un valor es un número válido
+      const isValidNumber = (value: unknown): value is number => {
+        return typeof value === "number" && !isNaN(value) && isFinite(value);
+      };
+      return (
+        isValidNumber(filters.monto.min) || isValidNumber(filters.monto.max)
+      );
 
     default:
       return false;
