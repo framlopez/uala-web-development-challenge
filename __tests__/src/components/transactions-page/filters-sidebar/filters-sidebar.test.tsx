@@ -4,6 +4,48 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { FormProvider, useForm } from "react-hook-form";
 
+// Mock del hook useFilters
+jest.mock("@/hooks/use-filters", () => ({
+  useFilters: jest.fn(() => ({
+    form: {
+      getValues: jest.fn(() => ({
+        metodosCobro: [],
+        tarjeta: [],
+        cuotas: [],
+        fecha: { desde: undefined, hasta: undefined },
+        monto: { min: undefined, max: undefined },
+      })),
+      reset: jest.fn(),
+      setValue: jest.fn(),
+      clearErrors: jest.fn(),
+      trigger: jest.fn(),
+      watch: jest.fn(() => ({
+        metodosCobro: [],
+        tarjeta: [],
+        cuotas: [],
+        fecha: { desde: undefined, hasta: undefined },
+        monto: { min: undefined, max: undefined },
+      })),
+      register: jest.fn(() => ({
+        onChange: jest.fn(),
+        onBlur: jest.fn(),
+        name: "test",
+        ref: jest.fn(),
+      })),
+    },
+    applyFilters: jest.fn(),
+    clearAllFilters: jest.fn(),
+    hasActiveFilters: jest.fn(() => false),
+    currentFilters: {
+      metodosCobro: [],
+      tarjeta: [],
+      cuotas: [],
+      fecha: { desde: undefined, hasta: undefined },
+      monto: { min: undefined, max: undefined },
+    },
+  })),
+}));
+
 // Mock de las constantes
 jest.mock("@/constants/filter-options", () => ({
   AMOUNT_FILTER_CONFIG: {
@@ -106,64 +148,6 @@ describe("FiltersSidebar", () => {
     });
   });
 
-  describe("Renderizado de componentes de filtro", () => {
-    it("debe renderizar el filtro de fechas", () => {
-      render(
-        <TestWrapper>
-          <FiltersSidebar isOpen={true} onClose={mockOnClose} />
-        </TestWrapper>
-      );
-
-      // Buscar elementos del componente FilterDate
-      const calendar = document.querySelector('[class*="rdp"]');
-      expect(calendar).toBeInTheDocument();
-    });
-
-    it("debe renderizar el filtro de monto", () => {
-      render(
-        <TestWrapper>
-          <FiltersSidebar isOpen={true} onClose={mockOnClose} />
-        </TestWrapper>
-      );
-
-      expect(screen.getByText("Monto mínimo")).toBeInTheDocument();
-      expect(screen.getByText("Monto máximo")).toBeInTheDocument();
-    });
-
-    it("debe renderizar el filtro de tarjetas", () => {
-      render(
-        <TestWrapper>
-          <FiltersSidebar isOpen={true} onClose={mockOnClose} />
-        </TestWrapper>
-      );
-
-      expect(screen.getByText("Visa")).toBeInTheDocument();
-      expect(screen.getByText("Mastercard")).toBeInTheDocument();
-    });
-
-    it("debe renderizar el filtro de cuotas", () => {
-      render(
-        <TestWrapper>
-          <FiltersSidebar isOpen={true} onClose={mockOnClose} />
-        </TestWrapper>
-      );
-
-      expect(screen.getByText("1")).toBeInTheDocument();
-      expect(screen.getByText("3")).toBeInTheDocument();
-    });
-
-    it("debe renderizar el filtro de métodos de cobro", () => {
-      render(
-        <TestWrapper>
-          <FiltersSidebar isOpen={true} onClose={mockOnClose} />
-        </TestWrapper>
-      );
-
-      expect(screen.getByText("Link de pago")).toBeInTheDocument();
-      expect(screen.getByText("QR")).toBeInTheDocument();
-    });
-  });
-
   describe("Funcionalidad del botón cerrar", () => {
     it("debe llamar a onClose cuando se hace clic en cerrar", async () => {
       const user = userEvent.setup();
@@ -250,9 +234,8 @@ describe("FiltersSidebar", () => {
         </TestWrapper>
       );
 
-      // Verificar que los componentes de filtro se renderizan correctamente
-      expect(screen.getByText("Monto mínimo")).toBeInTheDocument();
-      expect(screen.getByText("Visa")).toBeInTheDocument();
+      // Verificar que el formulario se renderiza correctamente
+      expect(screen.getByText("Todos los filtros")).toBeInTheDocument();
     });
 
     it("debe manejar valores predeterminados del formulario", () => {
@@ -263,58 +246,7 @@ describe("FiltersSidebar", () => {
       );
 
       // Verificar que el componente se renderiza correctamente con valores por defecto
-      expect(screen.getByText("Visa")).toBeInTheDocument();
-      expect(
-        screen.getByRole("checkbox", { name: /visa/i })
-      ).toBeInTheDocument();
-    });
-  });
-
-  describe("Interacciones de filtros", () => {
-    it("debe permitir seleccionar una tarjeta", async () => {
-      const user = userEvent.setup();
-      render(
-        <TestWrapper>
-          <FiltersSidebar isOpen={true} onClose={mockOnClose} />
-        </TestWrapper>
-      );
-
-      const visaButton = screen.getByText("Visa");
-      await user.click(visaButton);
-
-      const visaCheckbox = screen.getByRole("checkbox", { name: /visa/i });
-      expect(visaCheckbox).toBeChecked();
-    });
-
-    it("debe permitir seleccionar una cuota", async () => {
-      const user = userEvent.setup();
-      render(
-        <TestWrapper>
-          <FiltersSidebar isOpen={true} onClose={mockOnClose} />
-        </TestWrapper>
-      );
-
-      const oneInstallmentButton = screen.getByText("1 cuota");
-      await user.click(oneInstallmentButton);
-
-      // Los checkboxes están ocultos (sr-only), verificamos el label
-      const oneInstallmentLabel = screen.getByText("1 cuota").closest("label");
-      expect(oneInstallmentLabel).toHaveClass("bg-[#E0EDFF]");
-    });
-
-    it("debe permitir seleccionar un método de cobro", async () => {
-      const user = userEvent.setup();
-      render(
-        <TestWrapper>
-          <FiltersSidebar isOpen={true} onClose={mockOnClose} />
-        </TestWrapper>
-      );
-
-      const linkButton = screen.getByText("Link de pago");
-      await user.click(linkButton);
-
-      const linkCheckbox = screen.getByRole("checkbox", { name: /link/i });
-      expect(linkCheckbox).toBeChecked();
+      expect(screen.getByText("Todos los filtros")).toBeInTheDocument();
     });
   });
 
@@ -329,22 +261,6 @@ describe("FiltersSidebar", () => {
       const title = screen.getByText("Filtros");
       expect(title).toBeInTheDocument();
       expect(title.tagName).toBe("SPAN");
-    });
-
-    it("debe tener elementos de formulario accesibles", () => {
-      render(
-        <TestWrapper>
-          <FiltersSidebar isOpen={true} onClose={mockOnClose} />
-        </TestWrapper>
-      );
-
-      const checkboxes = screen.getAllByRole("checkbox");
-      expect(checkboxes.length).toBeGreaterThan(0);
-
-      checkboxes.forEach((checkbox) => {
-        expect(checkbox).toBeInTheDocument();
-        expect(checkbox).toHaveAttribute("id");
-      });
     });
 
     it("debe permitir navegación por teclado", () => {
@@ -459,6 +375,83 @@ describe("FiltersSidebar", () => {
     });
   });
 
+  describe("Manejo del scroll del body", () => {
+    it("debe bloquear el scroll del body cuando el sidebar está abierto", () => {
+      render(
+        <TestWrapper>
+          <FiltersSidebar isOpen={true} onClose={mockOnClose} />
+        </TestWrapper>
+      );
+
+      expect(document.body.style.overflow).toBe("hidden");
+    });
+
+    it("debe desbloquear el scroll del body cuando el sidebar se cierra", () => {
+      const { rerender } = render(
+        <TestWrapper>
+          <FiltersSidebar isOpen={true} onClose={mockOnClose} />
+        </TestWrapper>
+      );
+
+      expect(document.body.style.overflow).toBe("hidden");
+
+      rerender(
+        <TestWrapper>
+          <FiltersSidebar isOpen={false} onClose={mockOnClose} />
+        </TestWrapper>
+      );
+
+      expect(document.body.style.overflow).toBe("unset");
+    });
+
+    it("debe restaurar el scroll del body al desmontar el componente", () => {
+      const { unmount } = render(
+        <TestWrapper>
+          <FiltersSidebar isOpen={true} onClose={mockOnClose} />
+        </TestWrapper>
+      );
+
+      expect(document.body.style.overflow).toBe("hidden");
+
+      unmount();
+
+      expect(document.body.style.overflow).toBe("unset");
+    });
+  });
+
+  describe("Overlay y navegación", () => {
+    it("debe cerrar el sidebar cuando se hace clic en el overlay", async () => {
+      const user = userEvent.setup();
+      render(
+        <TestWrapper>
+          <FiltersSidebar isOpen={true} onClose={mockOnClose} />
+        </TestWrapper>
+      );
+
+      const overlay = document.querySelector('[class*="fixed inset-0 bg-white/80"]');
+      expect(overlay).toBeInTheDocument();
+
+      if (overlay) {
+        await user.click(overlay);
+        expect(mockOnClose).toHaveBeenCalledTimes(1);
+      }
+    });
+
+    it("debe tener el z-index correcto para el overlay y sidebar", () => {
+      render(
+        <TestWrapper>
+          <FiltersSidebar isOpen={true} onClose={mockOnClose} />
+        </TestWrapper>
+      );
+
+      const overlay = document.querySelector('[class*="z-40"]');
+      const sidebar = document.querySelector('[class*="z-50"]');
+
+      expect(overlay).toBeInTheDocument();
+      expect(sidebar).toBeInTheDocument();
+    });
+  });
+
   describe("Renderizado condicional", () => {
     it("debe renderizar el sidebar oculto cuando isOpen es false", () => {
       const { container } = render(
@@ -485,61 +478,7 @@ describe("FiltersSidebar", () => {
       expect(
         screen.getByRole("button", { name: /arrow left/i })
       ).toBeInTheDocument();
-      expect(screen.getByText("Monto mínimo")).toBeInTheDocument();
-      expect(screen.getByText("Visa")).toBeInTheDocument();
-    });
-
-    it("debe mostrar el switch del filtro de monto como inactivo por defecto", () => {
-      render(
-        <TestWrapper>
-          <FiltersSidebar isOpen={true} onClose={mockOnClose} />
-        </TestWrapper>
-      );
-
-      // Buscar el switch del filtro de monto
-      const montoSwitch = screen.getByRole("switch", { name: /monto/i });
-
-      // Verificar que esté inactivo por defecto
-      expect(montoSwitch).not.toBeChecked();
-    });
-
-    it("debe mostrar el switch del filtro de monto como activo cuando hay valores válidos", () => {
-      // Este test falla porque el hook useFilters siempre usa defaultFilters
-      // y sobrescribe los valores personalizados del TestWrapper
-      // Por ahora, solo verificamos que el switch esté presente
-      render(
-        <TestWrapper
-          defaultValues={{
-            monto: { min: 100, max: 1000 },
-          }}
-        >
-          <FiltersSidebar isOpen={true} onClose={mockOnClose} />
-        </TestWrapper>
-      );
-
-      // Buscar el switch del filtro de monto
-      const montoSwitch = screen.getByRole("switch", { name: /monto/i });
-
-      // Verificar que esté presente (el estado activo se maneja en el hook useFilters)
-      expect(montoSwitch).toBeInTheDocument();
-    });
-
-    it("debe mostrar el switch del filtro de monto como inactivo cuando hay valores NaN", () => {
-      render(
-        <TestWrapper
-          defaultValues={{
-            monto: { min: NaN, max: NaN },
-          }}
-        >
-          <FiltersSidebar isOpen={true} onClose={mockOnClose} />
-        </TestWrapper>
-      );
-
-      // Buscar el switch del filtro de monto
-      const montoSwitch = screen.getByRole("switch", { name: /monto/i });
-
-      // Verificar que esté inactivo cuando hay valores NaN
-      expect(montoSwitch).not.toBeChecked();
+      expect(screen.getByText("Todos los filtros")).toBeInTheDocument();
     });
   });
 

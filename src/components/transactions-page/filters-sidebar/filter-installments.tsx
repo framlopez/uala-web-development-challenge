@@ -9,10 +9,15 @@ export default function FilterInstallments() {
   const { watch, setValue } = useFormContext<Filters>();
   const selectedInstallments = watch("cuotas");
 
+  // Asegurar que selectedInstallments siempre sea un array
+  const safeSelectedInstallments = Array.isArray(selectedInstallments)
+    ? selectedInstallments
+    : [];
+
   const toggleInstallment = (
     installment: (typeof INSTALLMENT_OPTIONS)[number]["value"]
   ) => {
-    const currentInstallments = [...selectedInstallments];
+    const currentInstallments = [...safeSelectedInstallments];
     const installmentIndex = currentInstallments.indexOf(installment);
 
     if (installmentIndex > -1) {
@@ -27,7 +32,7 @@ export default function FilterInstallments() {
   return (
     <div className="flex gap-3 mb-6">
       {INSTALLMENT_OPTIONS.map((option) => {
-        const isSelected = selectedInstallments.includes(option.value);
+        const isSelected = safeSelectedInstallments.includes(option.value);
 
         return (
           <FilterButton

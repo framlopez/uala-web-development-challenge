@@ -9,10 +9,15 @@ export default function FilterMethods() {
   const { watch, setValue } = useFormContext<Filters>();
   const selectedMethods = watch("metodosCobro");
 
+  // Asegurar que selectedMethods siempre sea un array
+  const safeSelectedMethods = Array.isArray(selectedMethods)
+    ? selectedMethods
+    : [];
+
   const toggleMethod = (
     method: (typeof PAYMENT_METHOD_OPTIONS)[number]["value"]
   ) => {
-    const currentMethods = [...selectedMethods];
+    const currentMethods = [...safeSelectedMethods];
     const methodIndex = currentMethods.indexOf(method);
 
     if (methodIndex > -1) {
@@ -27,7 +32,7 @@ export default function FilterMethods() {
   return (
     <div className="flex gap-3 mb-6">
       {PAYMENT_METHOD_OPTIONS.map((option) => {
-        const isSelected = selectedMethods.includes(option.value);
+        const isSelected = safeSelectedMethods.includes(option.value);
 
         return (
           <FilterButton

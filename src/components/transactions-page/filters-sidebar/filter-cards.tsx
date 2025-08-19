@@ -9,8 +9,11 @@ export default function FilterCards() {
   const { watch, setValue } = useFormContext<Filters>();
   const selectedCards = watch("tarjeta");
 
+  // Asegurar que selectedCards siempre sea un array
+  const safeSelectedCards = Array.isArray(selectedCards) ? selectedCards : [];
+
   const toggleCard = (card: (typeof CARD_OPTIONS)[number]["value"]) => {
-    const currentCards = [...selectedCards];
+    const currentCards = [...safeSelectedCards];
     const cardIndex = currentCards.indexOf(card);
 
     if (cardIndex > -1) {
@@ -25,7 +28,7 @@ export default function FilterCards() {
   return (
     <div className="flex gap-3 mb-6">
       {CARD_OPTIONS.map((option) => {
-        const isSelected = selectedCards.includes(option.value);
+        const isSelected = safeSelectedCards.includes(option.value);
 
         return (
           <FilterButton
