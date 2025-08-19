@@ -19,6 +19,7 @@ export async function GET(request: NextRequest) {
     const montoMin = searchParams.get("montoMin");
     const montoMax = searchParams.get("montoMax");
 
+    // NTH: Falta validar que el formato de los filtros sea correcto
     // NTH: Obtener la información filtrada desde la base de datos
     const response = await fetch(
       "https://uala-dev-challenge.s3.us-east-1.amazonaws.com/transactions.json"

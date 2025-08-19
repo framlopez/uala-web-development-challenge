@@ -18,6 +18,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Validar formato de fecha
+    // NTH: Hacer esto con zod
     const fechaRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!fechaRegex.test(fechaDesde) || !fechaRegex.test(fechaHasta)) {
       return NextResponse.json(
@@ -40,15 +41,13 @@ export async function GET(request: NextRequest) {
     // Aplicar filtros
     let filteredTransactions = data.transactions;
 
-    // Filtro por fecha
-    if (fechaDesde || fechaHasta) {
-      filteredTransactions = filteredTransactions.filter((transaction) => {
-        const transactionDate = new Date(transaction.createdAt);
-        const desde = fechaDesde ? new Date(fechaDesde) : new Date(0);
-        const hasta = fechaHasta ? new Date(fechaHasta) : new Date();
-        return transactionDate >= desde && transactionDate <= hasta;
-      });
-    }
+    // Filtro por fecha - ambas fechas están garantizadas por la validación anterior
+    filteredTransactions = filteredTransactions.filter((transaction) => {
+      const transactionDate = new Date(transaction.createdAt);
+      const desde = new Date(fechaDesde);
+      const hasta = new Date(fechaHasta);
+      return transactionDate >= desde && transactionDate <= hasta;
+    });
 
     // NTH: Falta aplicar un LIMIT para no sobrecargar el servidor
 
