@@ -1,9 +1,9 @@
-import type { Transaction } from "@/app/api/me/transactions/types";
-import Currency from "@/src/types/currency";
 import { cn } from "@/src/shadcn/lib/utils";
+import Currency from "@/src/types/currency";
+import Transaction from "@/src/types/entities/transaction";
 import formatPrice from "@/src/utils/format-price";
 import getPaymentMethodLabel from "@/src/utils/payment-method-label";
-import CategoryStoresInIcon from "../icons/category-stores-in";
+import CategoryStoresInIcon from "../../icons/category-stores-in";
 
 export default function HistoryListItem({
   transaction,

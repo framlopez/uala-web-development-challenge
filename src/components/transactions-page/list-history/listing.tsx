@@ -1,14 +1,14 @@
 "use client";
 
-import type { TransactionsResponse } from "@/app/api/me/transactions/types";
 import EmptySearchSrc from "@/public/empty-search.png";
 import LIMIT from "@/src/constants/listing-limit";
 import { Skeleton } from "@/src/shadcn/components/ui/skeleton";
+import TransactionsResponse from "@/src/types/responses/transactions-response";
 import fetcher from "@/src/utils/fetcher";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import useSWR from "swr";
-import HistoryListItem from "./history-list-item";
+import HistoryListItem from "./listing-item";
 
 export default function HistoryList() {
   const searchParams = useSearchParams();
