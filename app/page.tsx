@@ -1,4 +1,4 @@
-import History from "@/src/components/transactions-page/history";
+import History from "@/src/components/transactions-page/list-history";
 import Summary from "@/src/components/transactions-page/summary";
 
 export default function Home() {
